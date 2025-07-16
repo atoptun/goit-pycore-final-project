@@ -56,18 +56,40 @@ def contact_info_format(rec: Record) -> str:
 
 
 @input_error
-def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
-    """Command: add <name> <phone>"""
-    name, phone, *_ = args
-    record = book.find(name)
-    msg = f"{Fore.GREEN}Contact updated."
-    if record is None:
-        record = Record(name)
-        book.add_record(record)
-        msg = f"{Fore.GREEN}Contact added."
-    if phone:
-        record.phones.append(Phone(phone))
-    return msg
+def cmd_add_contact(book: AddressBook) -> str:
+
+    print("Input contact info")
+
+    name = input("Name: ")
+    found_contact = book.find(name)
+
+    if found_contact:
+        print()
+        print(found_contact)
+        print("We already have the contact. Maybe you wanna edit the contact with command: edit")
+        print()
+        return
+
+    record = Record(name)
+
+    def splitStr(string: str, cls) -> list:
+        return [cls(s) for s in string.split(",")]
+
+    phones = input("Phone (10 dig. Example: 1234567890, 0987654321): ")
+    record.phones.extend(splitStr(phones, Phone))
+
+    email = input("Email (Example: test@test.ua, test@test.ua): ")
+    record.emails.extend(splitStr(email, Email))
+
+    birthday = input("Birthday(DD.MM.YYYY): ")
+    record.birthday = birthday
+
+    book.add_record(record)
+
+    print()
+    print(record)
+    print("Contact saved.")
+    print()
 
 
 @input_error
