@@ -1,18 +1,20 @@
 import pytest
+from typing import cast, Any, Generator
 from src.personal_assistant.addr_book.classes import AddressBook, Record
-from src.personal_assistant.addr_book.commands import load_data, save_data
+from src.personal_assistant.common import load_data, save_data
 
 TEST_ADDR_BOO_FILENAME = "./data/test_addr_book.pkl"
 
 @pytest.fixture
-def fresh_addr_book():
+def fresh_addr_book() -> Generator[AddressBook, Any, None]:
     book = AddressBook()
     yield book
 
 
 @pytest.fixture
-def dirty_addr_book():
-    book = load_data(TEST_ADDR_BOO_FILENAME)
+def dirty_addr_book() -> Generator[AddressBook, Any, None]:
+    data = load_data(TEST_ADDR_BOO_FILENAME)
+    book = cast(AddressBook, data) if data else AddressBook()
     yield book
     save_data(book, TEST_ADDR_BOO_FILENAME)
 

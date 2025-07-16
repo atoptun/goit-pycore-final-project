@@ -10,7 +10,7 @@ class Field:
 
     def __str__(self) -> str:
         return str(self.value)
-    
+
 
 class Name(Field):
     """
@@ -37,17 +37,17 @@ class Phone(Field):
         """
         phone = self._clear_phone(value)
         self._check_phone_format(phone)
-        super().__init__(value)
+        super().__init__(phone)
     
     @staticmethod
     def _check_phone_format(phone):
         if not(8 <= len(phone) <= 15):
             raise excp.PhoneFormatError(f"Wrong phone number format '{phone}'.")
-    
+
     @staticmethod
     def _clear_phone(value) -> str:
         return "".join(ch for ch in str(value) if ch.isdigit())
-         
+
     def __eq__(self, other) -> bool:
         if not isinstance(other, (Phone, str, int)):
             return NotImplemented
@@ -87,7 +87,7 @@ class Email(Field):
         """
         email = self._clear_email(value)
         self._check_email_format(email)
-        super().__init__(value)
+        super().__init__(email)
     
     @staticmethod
     def _check_email_format(value: str):
@@ -119,12 +119,12 @@ class EmailFactory:
         result = []
         for item in line.split(","):
             try:
-                email = Phone(item)
+                email = Email(item)
                 result.append(email)
             except:
                 pass # silent
         return result
-    
+
 
 class Birthday(Field):
     """
