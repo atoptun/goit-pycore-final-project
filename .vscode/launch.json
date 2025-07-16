@@ -8,16 +8,20 @@
             "name": "Run personal_assistant.main",
             "type": "debugpy",
             "request": "launch",
-            "module": "personal_assistant.main",
+            "module": "src.personal_assistant.main",
             "console": "integratedTerminal",
             "justMyCode": true
         },
         {
-            "name": "Run Assistant (Poetry)",
+            "name": "Poetry: Debug script",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/personal_assistant/main.py",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
         }
 
     ]
