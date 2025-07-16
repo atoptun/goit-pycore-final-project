@@ -1,0 +1,30 @@
+[project]
+name = "personal_assistant"
+version = "0.1.0"
+description = "Personal Assistant"
+authors = [
+    {name = "atoptun",email = "at@atompark.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "colorama (>=0.4.6,<0.5.0)",
+    "appdirs (>=1.4.4,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [{ include = "personal_assistant", from = "src" }]
+
+[tool.poetry.scripts]
+personal-assistant = "src.personal_assistant.main:main"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.1"
+coverage = "^7.9.2"
+pytest-cov = "^6.2.1"
+

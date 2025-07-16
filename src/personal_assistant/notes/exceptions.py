@@ -1,0 +1,6 @@
+from src.personal_assistant.common import ApplicationBaseError
+
+class NoteBaseError(ApplicationBaseError): ...
+
+class NoteNotFound(NoteBaseError): ...
+
