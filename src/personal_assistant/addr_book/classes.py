@@ -57,7 +57,21 @@ class Phone(Field):
             return self.value == self._clear_phone(str(other))
         except:
             return False
-    
+
+
+class PhoneFactory:
+    @staticmethod
+    def create(line: str) -> list[Phone]:
+        """Create phones from line, separator ',' """
+        result = []
+        for item in line.split(","):
+            try:
+                phone = Phone(item)
+                result.append(phone)
+            except:
+                pass # silent
+        return result
+
 
 class Email(Field):
     """
@@ -96,6 +110,20 @@ class Email(Field):
             return self.value == email 
         except:
             return False
+
+
+class EmailFactory:
+    @staticmethod
+    def create(line: str) -> list[Phone]:
+        """Create emails from line, separator ',' """
+        result = []
+        for item in line.split(","):
+            try:
+                email = Phone(item)
+                result.append(email)
+            except:
+                pass # silent
+        return result
     
 
 class Birthday(Field):

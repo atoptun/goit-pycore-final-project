@@ -23,6 +23,7 @@ COMMANDS_HELP = """Address book commands:
     all                                     | show all contacts
     hello                                   | hello
     help, ?                                 | this help
+    back                                    | back to main menu
     close, exit, quit                       | exit
 """
 
