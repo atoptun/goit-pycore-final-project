@@ -5,7 +5,7 @@ from colorama import Fore, Back, Style, init
 from functools import wraps
 from typing import Callable
 from src.personal_assistant.addr_book import exceptions as excp
-from src.personal_assistant.addr_book.classes import AddressBook, Record, Phone, Email
+from src.personal_assistant.addr_book.classes import AddressBook, Record, Phone, Email, PhoneFactory, EmailFactory
 
 
 init(autoreset=True)
@@ -62,7 +62,7 @@ def cmd_add_contact(book: AddressBook) -> str:
     print("Input contact info")
 
     name = input("Name: ")
-    found_contact = book.find(name)
+    found_contact = book.get(name)
 
     if found_contact:
         print()
@@ -73,14 +73,11 @@ def cmd_add_contact(book: AddressBook) -> str:
 
     record = Record(name)
 
-    def splitStr(string: str, cls) -> list:
-        return [cls(s) for s in string.split(",")]
-
     phones = input("Phone (10 dig. Example: 1234567890, 0987654321): ")
-    record.phones.extend(splitStr(phones, Phone))
+    record.phones.extend(PhoneFactory.create(phones))
 
     email = input("Email (Example: test@test.ua, test@test.ua): ")
-    record.emails.extend(splitStr(email, Email))
+    record.emails.extend(EmailFactory.create(email))
 
     birthday = input("Birthday(DD.MM.YYYY): ")
     record.birthday = birthday
