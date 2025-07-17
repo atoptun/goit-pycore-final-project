@@ -10,5 +10,5 @@ def test_factory_phones():
 
 def test_factory_emails():
     line = "test@test.com, test"
-    emails = EmailFactory.create(line)
+    emails, errors = EmailFactory.create(line)
     assert len(emails) == 1

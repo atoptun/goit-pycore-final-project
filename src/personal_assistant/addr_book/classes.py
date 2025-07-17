@@ -300,4 +300,4 @@ class AddressBook(UserDict[str, Record]):
         return self.data[self._normalize_name(name)]
     
     def __setitem__(self, name: str, item: Record) -> None:
-        self.data[self._normalize_name(name)] = item
+        raise KeyError("Error. Use method add_record()")
