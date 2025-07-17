@@ -6,6 +6,18 @@ from functools import wraps
 from src.personal_assistant.notes import exceptions as excp
 
 
+COMMANDS_HELP = """Notes commands:
+    add                                     | add note
+    search [value]                          | search notes by title or content
+    edit [id]                               | edit note
+    delete [id]                             | delete note
+    all                                     | show all notes
+    help                                    | this help
+    back                                    | back to main menu
+    close, exit, quit                       | exit
+    
+"""
+
 
 def input_error(func):
     @wraps(func)

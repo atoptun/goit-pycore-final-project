@@ -11,20 +11,16 @@ from src.personal_assistant.addr_book.classes import AddressBook, Record, Phone,
 init(autoreset=True)
 
 COMMANDS_HELP = """Address book commands:
-    add [name] [phone]                      | add contact or phone
-    change [name] [old phone] [new phone]   | change contact's phone
-    phone [name]                            | show contatc's phones
-    add-birthday [name] [birthday]          | add contact's birthday
-    add-bd                                  | alias add-birthday
-    show-birthday [name]                    | show contact's birthday
-    show-bd                                 | alias show-birthday
-    birthdays                               | show birthdays this week
-    bds                                     | alias birthdays
-    all                                     | show all contacts
-    hello                                   | hello
-    help, ?                                 | this help
-    back                                    | back to main menu
-    close, exit, quit                       | exit
+    add [name]                                    | add contact
+    search [value]                                | search contacts by name, phone, email, address
+    edit [name]                                   | edit contact
+    delete [name]                                 | delete contact
+    birthdays [days]                              | show birthdays in coming days (default 7 days)
+    all                                           | show all contacts
+    help                                          | this help
+    back                                          | back to main menu
+    close, exit, quit                             | exit
+    
 """
 
 
@@ -56,7 +52,6 @@ def contact_info_format(rec: Record) -> str:
 
 @input_error
 def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
-    print(args)
     name = args[0]
     found_contact = book.get(name)
 
@@ -90,7 +85,6 @@ def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
 
 @input_error
 def cmd_search_contacts(book: AddressBook, args: list[str]):
-    print(args)
     print()
     print("Search for a contact. You may match the name, phone numbers, emails, or address.")
 
