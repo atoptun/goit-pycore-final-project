@@ -5,26 +5,22 @@ from colorama import Fore, Back, Style, init
 from functools import wraps
 from typing import Callable
 from src.personal_assistant.addr_book import exceptions as excp
-from src.personal_assistant.addr_book.classes import AddressBook, Record, Phone, Email
+from src.personal_assistant.addr_book.classes import AddressBook, Record, Phone, Email, PhoneFactory, EmailFactory
 
 
 init(autoreset=True)
 
 COMMANDS_HELP = """Address book commands:
-    add [name] [phone]                      | add contact or phone
-    change [name] [old phone] [new phone]   | change contact's phone
-    phone [name]                            | show contatc's phones
-    add-birthday [name] [birthday]          | add contact's birthday
-    add-bd                                  | alias add-birthday
-    show-birthday [name]                    | show contact's birthday
-    show-bd                                 | alias show-birthday
-    birthdays                               | show birthdays this week
-    bds                                     | alias birthdays
-    all                                     | show all contacts
-    hello                                   | hello
-    help, ?                                 | this help
-    back                                    | back to main menu
-    close, exit, quit                       | exit
+    add [name]                                    | add contact
+    search [value]                                | search contacts by name, phone, email, address
+    edit [name]                                   | edit contact
+    delete [name]                                 | delete contact
+    birthdays [days]                              | show birthdays in coming days (default 7 days)
+    all                                           | show all contacts
+    help                                          | this help
+    back                                          | back to main menu
+    close, exit, quit                             | exit
+    
 """
 
 
@@ -43,8 +39,6 @@ def input_error(func):
     return wraper
 
 
-
-
 @input_error
 def parse_input(line: str) -> tuple:
     """Returns a command and arguments"""
@@ -57,12 +51,9 @@ def contact_info_format(rec: Record) -> str:
 
 
 @input_error
-def cmd_add_contact(book: AddressBook) -> str:
-
-    print("Input contact info")
-
-    name = input("Name: ")
-    found_contact = book.find(name)
+def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
+    name = args[0]
+    found_contact = book.get(name)
 
     if found_contact:
         print()
@@ -73,14 +64,13 @@ def cmd_add_contact(book: AddressBook) -> str:
 
     record = Record(name)
 
-    def splitStr(string: str, cls) -> list:
-        return [cls(s) for s in string.split(",")]
+    print("Input contact info")
 
     phones = input("Phone (10 dig. Example: 1234567890, 0987654321): ")
-    record.phones.extend(splitStr(phones, Phone))
+    record.phones.extend(PhoneFactory.create(phones))
 
     email = input("Email (Example: test@test.ua, test@test.ua): ")
-    record.emails.extend(splitStr(email, Email))
+    record.emails.extend(EmailFactory.create(email))
 
     birthday = input("Birthday(DD.MM.YYYY): ")
     record.birthday = birthday
@@ -90,6 +80,25 @@ def cmd_add_contact(book: AddressBook) -> str:
     print()
     print(record)
     print("Contact saved.")
+    print()
+
+
+@input_error
+def cmd_search_contacts(book: AddressBook, args: list[str]):
+    print()
+    print("Search for a contact. You may match the name, phone numbers, emails, or address.")
+
+    search_value = " ".join(args)
+    found_contacts = book.find(search_value)
+
+    if not found_contacts:
+        print('Not Found Contacts. You can try again: "search"')
+        print()
+        return
+
+    for record in found_contacts:
+        print(record)
+
     print()
 
 

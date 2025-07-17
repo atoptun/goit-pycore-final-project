@@ -22,11 +22,11 @@ def main():
             continue
         command, *args = commands.parse_input(cmd_str)
 
-    #     match command:
+        match command:
     #         case "hello":
     #             print(f"{Fore.BLUE}How can I help you?")
-    #         case "help" | "?":
-    #             print(commands.COMMANDS_HELP)
+            case "help" | "?":
+                print(commands.COMMANDS_HELP)
     #         case "add":
     #             print(commands.cmd_add_contact(book, args))
     #         case "change":
@@ -44,8 +44,8 @@ def main():
     #         case "close" | "exit" | "quit":
     #             print(f"{Fore.GREEN}Have a nice day!")
     #             break
-    #         case _:
-    #             print(f"{Fore.RED}Invalid command.")
+            case _:
+                print(f"{Fore.RED}Invalid command.")
 
     # commands.save_data(book, NOTES_FILE_PATH)
 
