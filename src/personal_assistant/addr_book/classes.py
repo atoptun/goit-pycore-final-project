@@ -114,7 +114,7 @@ class Email(Field):
 
 class EmailFactory:
     @staticmethod
-    def create(line: str) -> list[Phone]:
+    def create(line: str) -> list[Email]:
         """Create emails from line, separator ',' """
         result = []
         for item in line.split(","):
@@ -130,7 +130,7 @@ class Birthday(Field):
     """
     Field Birthday for address book record
     """
-    def __init__(self, value):
+    def __init__(self, value=None):
         self.value = None
         try:
             if value is not None:
@@ -140,6 +140,18 @@ class Birthday(Field):
 
     def __str__(self) -> str:
         return self.value.strftime("%d.%m.%Y") if self.value is not None else "Unknown"
+
+
+class PostAddress(Field):
+    """
+    Field Address for address book record.
+    """
+    def __init__(self, value: str|None = None):
+        # TODO: parse address to post, country, sity, street and other
+        self.value = None if value is None else value.strip()
+
+    def __str__(self) -> str:
+        return self.value if self.value is not None else "Unknown"
 
 
 class EmailList(UniqueList[Email]): ...
@@ -201,7 +213,8 @@ class Record:
         self.name: Name = Name(name)
         self.__phones: PhoneList = PhoneList()
         self.__emails: EmailList = EmailList()
-        self.__birthday = Birthday(None)
+        self.__birthday = Birthday()
+        self.__address = PostAddress()
 
     @property
     def phones(self) -> PhoneList:
@@ -219,8 +232,16 @@ class Record:
     def birthday(self, bd: str):
         self.__birthday = Birthday(bd)
 
+    @property
+    def address(self) -> PostAddress:
+        return self.__address
+    
+    @address.setter
+    def address(self, address):
+        self.__address = PostAddress(address)
+
     def __str__(self):
-        return f"Name: {self.name}, bd: {self.birthday}, phones: {self.phones}"
+        return f"Name: {self.name}, bd: {self.birthday}, phones: {self.phones}, emails: {self.emails}, address: {self.address}"
 
 
 class AddressBook(UserDict[str, Record]):
