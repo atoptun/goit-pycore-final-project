@@ -28,9 +28,9 @@ def main():
             case "help" | "?":
                 print(commands.COMMANDS_HELP)
             case "add":
-                commands.cmd_add_contact(book)
+                commands.cmd_add_contact(book, args)
             case "search":
-                commands.cmd_search_contacts(book)
+                commands.cmd_search_contacts(book, args)
             case "change":
                 print(commands.cmd_change_contact(book, args))
             case "phone":

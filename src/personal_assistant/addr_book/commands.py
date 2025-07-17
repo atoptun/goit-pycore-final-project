@@ -55,11 +55,9 @@ def contact_info_format(rec: Record) -> str:
 
 
 @input_error
-def cmd_add_contact(book: AddressBook) -> str:
-
-    print("Input contact info")
-
-    name = input("Name: ")
+def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
+    print(args)
+    name = args[0]
     found_contact = book.get(name)
 
     if found_contact:
@@ -70,6 +68,8 @@ def cmd_add_contact(book: AddressBook) -> str:
         return
 
     record = Record(name)
+
+    print("Input contact info")
 
     phones = input("Phone (10 dig. Example: 1234567890, 0987654321): ")
     record.phones.extend(PhoneFactory.create(phones))
@@ -89,16 +89,15 @@ def cmd_add_contact(book: AddressBook) -> str:
 
 
 @input_error
-def cmd_search_contacts(book: AddressBook) -> str:
+def cmd_search_contacts(book: AddressBook, args: list[str]):
+    print(args)
     print()
-    print("Search for a contact using criteria..")
-    print("The criteria may match the name, phone numbers, emails, or address.")
+    print("Search for a contact. You may match the name, phone numbers, emails, or address.")
 
-    serch_value = input("Search: ")
-    found_contacts = book.find(serch_value)
+    search_value = " ".join(args)
+    found_contacts = book.find(search_value)
 
     if not found_contacts:
-        print()
         print('Not Found Contacts. You can try again: "search"')
         print()
         return
