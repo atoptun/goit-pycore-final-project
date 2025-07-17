@@ -55,7 +55,7 @@ def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
     name = args[0]
     found_contact = book.get(name)
 
-    if found_contact:
+    if found_contact: # TODO: just return error
         print()
         print(found_contact)
         print("We already have the contact. Maybe you wanna edit the contact with command: edit")
@@ -67,10 +67,14 @@ def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
     print("Input contact info")
 
     phones = input("Phone (10 dig. Example: 1234567890, 0987654321): ")
-    record.phones.extend(PhoneFactory.create(phones))
+    phones, errors = PhoneFactory.create(phones)
+    record.phones.extend(phones)
+    # TODO: show errors
 
     email = input("Email (Example: test@test.ua, test@test.ua): ")
-    record.emails.extend(EmailFactory.create(email))
+    emails, errors = EmailFactory.create(email)
+    record.emails.extend(emails)
+    # TODO: show errors
 
     birthday = input("Birthday(DD.MM.YYYY): ")
     record.birthday = birthday
