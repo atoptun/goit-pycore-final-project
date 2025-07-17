@@ -43,8 +43,6 @@ def input_error(func):
     return wraper
 
 
-
-
 @input_error
 def parse_input(line: str) -> tuple:
     """Returns a command and arguments"""
@@ -87,6 +85,27 @@ def cmd_add_contact(book: AddressBook) -> str:
     print()
     print(record)
     print("Contact saved.")
+    print()
+
+
+@input_error
+def cmd_search_contacts(book: AddressBook) -> str:
+    print()
+    print("Search for a contact using criteria..")
+    print("The criteria may match the name, phone numbers, emails, or address.")
+
+    serch_value = input("Search: ")
+    found_contacts = book.find(serch_value)
+
+    if not found_contacts:
+        print()
+        print('Not Found Contacts. You can try again: "search"')
+        print()
+        return
+
+    for record in found_contacts:
+        print(record)
+
     print()
 
 
