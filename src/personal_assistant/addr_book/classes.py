@@ -251,8 +251,23 @@ class AddressBook(UserDict[str, Record]):
     def add_record(self, record: Record):
         self.data[self._normalize_name(record.name)] = record
 
-    def find(self, name: str) -> Record | None:
-        return self.data.get(self._normalize_name(name))
+    def find(self, criteria: str) -> list[Record]:
+        """
+        Search for a contact using criteria.
+        The criteria may match the name, phone numbers, emails, or address.
+        """
+        result = []
+        criteria = criteria.lower()
+        for rec in self.values():
+            if str(rec.name).lower().find(criteria) >= 0 \
+                or str(rec.phones).lower().find(criteria) >= 0 \
+                or str(rec.emails).lower().find(criteria) >= 0 \
+                or str(rec.address).lower().find(criteria) >= 0 \
+            :
+                result.append(rec)
+                continue
+
+        return result
 
     def delete(self, name: str):
         self.data.pop(self._normalize_name(name), None)
