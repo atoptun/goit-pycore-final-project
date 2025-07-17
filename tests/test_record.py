@@ -11,8 +11,10 @@ def test_record_simple():
     address = "Ukrain, Lviv, Banders str, 23"
     rec = Record(name)
     rec.birthday = birthday
-    rec.phones.extend(PhoneFactory.create(phones))
-    rec.emails.extend(EmailFactory.create(emails))
+    phones, errors = PhoneFactory.create(phones)
+    rec.phones.extend(phones)
+    emails, errors = EmailFactory.create(emails)
+    rec.emails.extend(emails)
     rec.address = address
     assert len(rec.phones) == 3
     assert len(rec.emails) == 2

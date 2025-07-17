@@ -36,15 +36,19 @@ def test_find_contacts(fresh_addr_book):
 
     rec1 = Record("John")
     rec1.birthday = "02.02.2000"
-    rec1.phones.extend(PhoneFactory.create("111111111, 222222222, 333333333"))
-    rec1.emails.extend(EmailFactory.create("test1@test.com, test2@test.com"))
+    phones, errors = PhoneFactory.create("111111111, 222222222, 333333333")
+    rec1.phones.extend(phones)
+    emails, errors = EmailFactory.create("test1@test.com, test2@test.com")
+    rec1.emails.extend(emails)
     rec1.address = "Ukrain, Lviv, Smith str, 23"
     book.add_record(rec1)
 
     rec2 = Record("John Smith")
     rec2.birthday = "02.02.2000"
-    rec2.phones.extend(PhoneFactory.create("123123123, 234234234, 345345345"))
-    rec2.emails.extend(EmailFactory.create("test1@test.ua, test2@test.ua"))
+    phones, errors = PhoneFactory.create("123123123, 234234234, 345345345")
+    rec2.phones.extend(phones)
+    emails, errors = EmailFactory.create("test1@test.ua, test2@test.ua")
+    rec2.emails.extend(emails)
     rec2.address = "Ukrain, Chernihiv, S.Bandera str, 23"
     book.add_record(rec2)
 

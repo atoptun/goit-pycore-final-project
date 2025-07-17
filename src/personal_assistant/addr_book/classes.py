@@ -61,16 +61,17 @@ class Phone(Field):
 
 class PhoneFactory:
     @staticmethod
-    def create(line: str) -> list[Phone]:
+    def create(line: str) -> tuple[list[Phone], list[str]]:
         """Create phones from line, separator ',' """
-        result = []
+        phones = []
+        errors = []
         for item in line.split(","):
             try:
                 phone = Phone(item)
-                result.append(phone)
-            except:
-                pass # silent
-        return result
+                phones.append(phone)
+            except excp.PhoneFormatError as e:
+                errors.append(str(e))
+        return phones, errors
 
 
 class Email(Field):
@@ -114,16 +115,17 @@ class Email(Field):
 
 class EmailFactory:
     @staticmethod
-    def create(line: str) -> list[Email]:
+    def create(line: str) -> tuple[list[Email], list[str]]:
         """Create emails from line, separator ',' """
-        result = []
+        emails = []
+        errors = []
         for item in line.split(","):
             try:
                 email = Email(item)
-                result.append(email)
-            except:
-                pass # silent
-        return result
+                emails.append(email)
+            except excp.EmailFormatError as e:
+                errors.append(str(e))
+        return emails, errors
 
 
 class Birthday(Field):
