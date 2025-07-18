@@ -2,11 +2,11 @@ from collections import UserDict
 import ulid 
 
 
-class NoteRecord:
+class NoteRecord(object):
     def __init__(self) -> None:
         self.__id = ulid.new().str
-        self.title = ""
-        self.message = ""
+        self.__title = ""
+        self.__text = ""
         self.__tags = set()
 
     @property
@@ -21,8 +21,24 @@ class NoteRecord:
     def tags(self, tags: set):
         self.__tags = tags
 
+    @property
+    def title(self):
+        return self.__title
+    
+    @title.setter
+    def title1(self, title: str):
+        self.__title = title
+
+    @property
+    def text(self):
+        return self.__text
+    
+    @text.setter
+    def text(self, text: str):
+        self.__text = text
+
     def __str__(self) -> str:
-        return f"id: {self.id}, title: {self.title}, message: {self.message}, tags: {self.tags}"
+        return f"id: {self.id}, title: {self.title}, message: {self.text}, tags: {self.tags}"
     
 
 class Notes(UserDict[str, NoteRecord]):
