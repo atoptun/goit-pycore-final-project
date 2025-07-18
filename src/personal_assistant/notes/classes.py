@@ -3,11 +3,11 @@ import ulid
 
 
 class NoteRecord(object):
-    def __init__(self) -> None:
+    def __init__(self, title: str, text: str) -> None:
         self.__id = ulid.new().str
-        self.__title = ""
-        self.__text = ""
         self.__tags = set()
+        self.title = title
+        self.text = text
 
     @property
     def id(self):
@@ -17,16 +17,12 @@ class NoteRecord(object):
     def tags(self):
         return self.__tags
     
-    @tags.setter
-    def tags(self, tags: set):
-        self.__tags = tags
-
     @property
     def title(self):
         return self.__title
     
     @title.setter
-    def title1(self, title: str):
+    def title(self, title: str):
         self.__title = title
 
     @property
@@ -36,6 +32,9 @@ class NoteRecord(object):
     @text.setter
     def text(self, text: str):
         self.__text = text
+        words = text.replace("\n", " ").split(" ")
+        tags = set([word.strip("#") for word in words if word.startswith("#")])
+        self.__tags = tags
 
     def __str__(self) -> str:
         return f"id: {self.id}, title: {self.title}, message: {self.text}, tags: {self.tags}"
