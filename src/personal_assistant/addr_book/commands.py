@@ -149,32 +149,27 @@ def cmd_show_birthday(book: AddressBook, args: list[str]) -> str:
         raise excp.ContactNotFound("Contact not found.")
     return f"{Fore.GREEN}{rec.name}'s birthday: {Fore.BLUE}{rec.birthday}"
 
-
 @input_error
 def cmd_birthdays(book: AddressBook, args: list[str]) -> str:
     """Command: birthdays"""
-    try:
-        if args:
+    if args:
             days = int(args[0])
-            if days <= 0:
-                return f"{Fore.YELLOW}Please provide a positive number of days.{Fore.RESET}"
-            
-            records = book.get_upcoming_birthdays(days)
-            period_str = f"in the next {days} days"
-        else:
-            records = book.get_upcoming_birthdays()
-            period_str = "this week"
+            header = f"{Fore.GREEN}There are birthdays in next {days} days:{Fore.RESET}\n"
+            no_birthdays_msg = f"{Fore.GREEN}There are no birthdays in next {days} days."
+            records = book.get_upcoming_birthdays(days)     
+    else:
+        header = f"{Fore.GREEN}Birthdays in this week:{Fore.RESET}\n"
+        no_birthdays_msg = f"{Fore.GREEN}There are no birthdays this week."
+        records = book.get_upcoming_birthdays()
 
-        if not records:
-            return f"{Fore.GREEN}No upcoming birthdays {period_str}.{Fore.RESET}"
-
-        header = f"{Fore.GREEN}Here are the birthdays {period_str}:{Fore.RESET}"
-        contacts_info = [contact_info_format(rec) for rec in records]
+    if not records:
+        return no_birthdays_msg
+    
+    result = header
+    for rec in records:
+        result += f"{contact_info_format(rec)}\n"
         
-        return f"{header}\n" + "\n".join(contacts_info)
-
-    except ValueError:
-        return f"{Fore.RED}Invalid number format. Please enter an integer.{Fore.RESET}"
+    return result.strip()
 
 
 @input_error
