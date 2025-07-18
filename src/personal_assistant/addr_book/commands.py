@@ -153,10 +153,28 @@ def cmd_show_birthday(book: AddressBook, args: list[str]) -> str:
 @input_error
 def cmd_birthdays(book: AddressBook, args: list[str]) -> str:
     """Command: birthdays"""
-    result = f"{Fore.GREEN}Birthdays in this week:{Fore.RESET}\n"
-    records = book.get_upcoming_birthdays()
+    days_str = None
+    if args:
+        days_str = args[0]
+        try:
+            days = int(days_str)
+        except ValueError:
+            return f"{Fore.RED}Invalid number of days provided. Please enter a valid integer.{Fore.RESET}"
+    else:
+        days = 7  
+
+    if days_str is None:
+        result_message_start = f"{Fore.GREEN}There are birthdays in this week:{Fore.RESET}\n"
+        no_birthdays_message = f"{Fore.GREEN}There are no birthdays this week."
+    else:
+        result_message_start = f"{Fore.GREEN}There are birthdays in next {days} days:{Fore.RESET}\n"
+        no_birthdays_message = f"{Fore.GREEN}There are no birthdays in next {days} days."
+
+    records = book.get_upcoming_birthdays(days)
     if not records:
-        return f"{Fore.GREEN}No birthdays this week."
+        return no_birthdays_message
+    
+    result = result_message_start
     for rec in records:
         result += f"{contact_info_format(rec)}\n"
     return result
