@@ -99,21 +99,13 @@ def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
 
 @input_error
 def cmd_search_contacts(book: AddressBook, args: list[str]):
-    print()
-    print("Search for a contact. You may match the name, phone numbers, emails, or address.")
-
     search_value = " ".join(args)
     found_contacts = book.find(search_value)
 
     if not found_contacts:
-        print('Not Found Contacts. You can try again: "search"')
-        print()
-        return
+        raise excp.ContactNotFound()
 
-    for record in found_contacts:
-        print(record)
-
-    print()
+    return "\n".join([str(record) for record in found_contacts])
 
 
 @input_error
@@ -159,14 +151,15 @@ def cmd_show_birthday(book: AddressBook, args: list[str]) -> str:
         raise excp.ContactNotFound("Contact not found.")
     return f"{Fore.GREEN}{rec.name}'s birthday: {Fore.BLUE}{rec.birthday}"
 
+
 @input_error
 def cmd_birthdays(book: AddressBook, args: list[str]) -> str:
     """Command: birthdays"""
     if args:
-            days = int(args[0])
-            header = f"{Fore.GREEN}There are birthdays in next {days} days:{Fore.RESET}\n"
-            no_birthdays_msg = f"{Fore.GREEN}There are no birthdays in next {days} days."
-            records = book.get_upcoming_birthdays(days)     
+        days = int(args[0])
+        header = f"{Fore.GREEN}There are birthdays in next {days} days:{Fore.RESET}\n"
+        no_birthdays_msg = f"{Fore.GREEN}There are no birthdays in next {days} days."
+        records = book.get_upcoming_birthdays(days)
     else:
         header = f"{Fore.GREEN}Birthdays in this week:{Fore.RESET}\n"
         no_birthdays_msg = f"{Fore.GREEN}There are no birthdays this week."
@@ -174,11 +167,11 @@ def cmd_birthdays(book: AddressBook, args: list[str]) -> str:
 
     if not records:
         return no_birthdays_msg
-    
+
     result = header
     for rec in records:
         result += f"{contact_info_format(rec)}\n"
-        
+
     return result.strip()
 
 
