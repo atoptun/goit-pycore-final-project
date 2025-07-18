@@ -6,6 +6,7 @@ from functools import wraps
 from typing import Callable
 from src.personal_assistant.addr_book import exceptions as excp
 from src.personal_assistant.addr_book.classes import AddressBook, Record, Phone, Email, PhoneFactory, EmailFactory
+from src.personal_assistant.common import promt_pretty
 
 
 init(autoreset=True)
@@ -52,13 +53,22 @@ def contact_info_format(rec: Record) -> str:
 
 @input_error
 def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
-    name = args[0]
+
+    if not args:
+        name = promt_pretty("Enter contact name")
+    else:
+        name = args[0]
+
+    if not name:
+        return "Name is required."
+
     found_contact = book.get(name)
 
-    if found_contact: # TODO: just return error
+    if found_contact:  # TODO: just return error
         print()
         print(found_contact)
-        print("We already have the contact. Maybe you wanna edit the contact with command: edit")
+        print(
+            "We already have the contact. Maybe you wanna edit the contact with command: change [name]")
         print()
         return
 
@@ -66,17 +76,21 @@ def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
 
     print("Input contact info")
 
-    phones = input("Phone (10 dig. Example: 1234567890, 0987654321): ")
+    phones = promt_pretty("Phone (10 dig. Example: 1234567890, 0987654321)")
     phones, errors = PhoneFactory.create(phones)
     record.phones.extend(phones)
     # TODO: show errors
 
-    email = input("Email (Example: test@test.ua, test@test.ua): ")
+    address = promt_pretty("Address")
+    record.address = address
+    # TODO: show errors
+
+    email = promt_pretty("Email (Example: test@test.ua, test@test.ua)")
     emails, errors = EmailFactory.create(email)
     record.emails.extend(emails)
     # TODO: show errors
 
-    birthday = input("Birthday(DD.MM.YYYY): ")
+    birthday = promt_pretty("Birthday(DD.MM.YYYY)")
     record.birthday = birthday
 
     book.add_record(record)
