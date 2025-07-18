@@ -65,7 +65,10 @@ class PhoneFactory:
         """Create phones from line, separator ',' """
         phones = []
         errors = []
+        line = str(line).replace("\n", ",")
         for item in line.split(","):
+            if not item.strip():
+                continue
             try:
                 phone = Phone(item)
                 phones.append(phone)
@@ -119,7 +122,10 @@ class EmailFactory:
         """Create emails from line, separator ',' """
         emails = []
         errors = []
+        line = str(line).replace("\n", ",")
         for item in line.split(","):
+            if not item.strip():
+                continue
             try:
                 email = Email(item)
                 emails.append(email)
