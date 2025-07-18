@@ -4,6 +4,9 @@ from pathlib import Path
 from colorama import Fore, Back, Style, init
 from functools import wraps
 from src.personal_assistant.notes import exceptions as excp
+from src.personal_assistant.notes.classes import Notes, NoteRecord
+from src.personal_assistant.common import promt_pretty
+
 
 
 COMMANDS_HELP = """Notes commands:
@@ -41,6 +44,20 @@ def parse_input(line: str) -> tuple:
     """Returns a command and arguments"""
     cmd, *args = line.strip().split()
     return (cmd.strip().lower(), *args)
+
+
+@input_error
+def cmd_add_note(notes: Notes):
+    title= promt_pretty("Enter a title")
+    text = promt_pretty("Enter a text the note", multiline = True)
+   
+    record = NoteRecord()
+    record.title = title
+    record.text = text
+
+    notes.add(record)
+  
+    return "Note added."
 
 
 def get_function_names():

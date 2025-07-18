@@ -23,12 +23,12 @@ def main():
         command, *args = commands.parse_input(cmd_str)
 
         match command:
-    #         case "hello":
-    #             print(f"{Fore.BLUE}How can I help you?")
+            case "hello":
+                print(f"{Fore.BLUE}How can I help you?")
             case "help" | "?":
                 print(commands.COMMANDS_HELP)
-    #         case "add":
-    #             print(commands.cmd_add_contact(book, args))
+            case "add":
+                print(commands.cmd_add_note(book))
     #         case "change":
     #             print(commands.cmd_change_contact(book, args))
     #         case "phone":
@@ -41,13 +41,13 @@ def main():
     #             print(commands.cmd_birthdays(book, args))
     #         case "all":
     #             print(commands.cmd_show_all(book, args))
-    #         case "close" | "exit" | "quit":
-    #             print(f"{Fore.GREEN}Have a nice day!")
-    #             break
-            case _:
-                print(f"{Fore.RED}Invalid command.")
+            case "close" | "exit" | "quit":
+                print(f"{Fore.GREEN}Have a nice day!")
+                break
+            # case _:
+            #     print(f"{Fore.RED}Invalid command.")
 
-    # commands.save_data(book, NOTES_FILE_PATH)
+    save_data(book, NOTES_FILE_PATH)
 
 
 if __name__ == "__main__":
