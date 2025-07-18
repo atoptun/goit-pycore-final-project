@@ -29,6 +29,8 @@ def main():
                 print(commands.COMMANDS_HELP)
             case "add":
                 print(commands.cmd_add_note(book))
+            case "find":
+                print(commands.cmd_find_all(book))
     #         case "change":
     #             print(commands.cmd_change_contact(book, args))
     #         case "phone":
