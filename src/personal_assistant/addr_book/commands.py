@@ -12,6 +12,7 @@ init(autoreset=True)
 
 COMMANDS_HELP = """Address book commands:
     add [name]                                    | add contact
+    change [name]                                 | edit contact details
     search [value]                                | search contacts by name, phone, email, address
     edit [name]                                   | edit contact
     delete [name]                                 | delete contact
@@ -47,8 +48,7 @@ def parse_input(line: str) -> tuple:
 
 
 def contact_info_format(rec: Record) -> str:
-    return f"Name: {Fore.YELLOW}{rec.name}{Fore.RESET}, birthday: {Fore.CYAN}{rec.birthday}{Fore.RESET}, phones: {Fore.GREEN}{rec.phones}{Fore.RESET}"
-
+    return f"Name: {Fore.YELLOW}{rec.name}{Fore.RESET}, birthday: {Fore.CYAN}{rec.birthday}{Fore.RESET}, phones: {Fore.GREEN}{rec.phones}{Fore.RESET}, email: {Fore.MAGENTA}{rec.emails}{Fore.RESET}"
 
 @input_error
 def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
@@ -108,15 +108,81 @@ def cmd_search_contacts(book: AddressBook, args: list[str]):
 
 @input_error
 def cmd_change_contact(book: AddressBook, args: list[str]) -> str:
-    """Command: change <name> <old_phone> <new_phone>"""
-    name, old_phone, new_phone, *_ = args
+    """Command: change <name> - interactive contact editing"""
+    if not args:
+        name = input("Enter contact name: ")
+    else:
+        name = args[0]
+
     record = book.find(name)
     if record is None:
-        raise excp.ContactNotFound("Contact not found.")
-    if record.phones.change(Phone(old_phone), Phone(new_phone)):
-        return f"{Fore.GREEN}Phone number changed."
-    else:
-        return f"{Fore.RED}Phone number not found."
+        return f"{Fore.RED}Contact not found."
+
+    print(f"\n{Fore.CYAN}Current contact info:")
+    print(contact_info_format(record))
+    print(f"\n{Fore.YELLOW}What do you want to edit?")
+    print("1. Name")
+    print("2. Phone")
+    print("3. Email")
+    print("4. Birthday")
+    print("5. Address")
+    print("0. Cancel")
+
+    choice = input("Enter your choice (0-5): ")
+
+    match choice:
+        case "1":
+            new_name = input("Enter new name: ")
+            if new_name and new_name != record.name:
+                book.delete(record.name)
+                record.name = new_name
+                book.add_record(record)
+                return f"{Fore.GREEN}Name updated to {new_name}."
+            return f"{Fore.RED}Invalid name or no changes."
+
+        case "2":
+            current_phone = record.phones[0] if record.phones else "Not set"
+            print(f"Current phone: {current_phone}")
+            new_phone = input("Enter new phone: ")
+
+            if new_phone:
+                record.phones.clear()
+                record.phones.append(Phone(new_phone))
+                return f"{Fore.GREEN}Phone updated to {new_phone}."
+            else:
+                return f"{Fore.RED}No phone number entered."
+
+        case "3":
+            current_email = record.emails[0] if record.emails else "Not set"
+            print(f"Current email: {current_email}")
+            new_email = input("Enter new email: ")
+
+            if new_email:
+                record.emails.clear()
+                record.emails.append(Email(new_email))
+                return f"{Fore.GREEN}Email updated to {new_email}."
+            else:
+                return f"{Fore.RED}No email entered."
+
+        case "4":
+            current_bd = record.birthday if record.birthday else "Not set"
+            print(f"Current birthday: {current_bd}")
+            new_birthday = input("Enter new birthday (DD.MM.YYYY): ")
+            record.birthday = new_birthday
+            return f"{Fore.GREEN}Birthday updated."
+
+        case "5":
+            current_addr = record.address if hasattr(record, 'address') and record.address else "Not set"
+            print(f"Current address: {current_addr}")
+            new_address = input("Enter new address: ")
+            record.address = new_address
+            return f"{Fore.GREEN}Address updated."
+
+        case "0":
+            return f"{Fore.BLUE}Edit cancelled."
+
+        case _:
+            return f"{Fore.RED}Invalid choice."
 
 
 @input_error

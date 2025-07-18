@@ -215,8 +215,7 @@ class Record:
         self.name: Name = Name(name)
         self.__phones: PhoneList = PhoneList()
         self.__emails: EmailList = EmailList()
-        self.__birthday = Birthday()
-        self.__address = PostAddress()
+        self.__birthday = Birthday(None)
 
     @property
     def phones(self) -> PhoneList:
@@ -234,42 +233,45 @@ class Record:
     def birthday(self, bd: str):
         self.__birthday = Birthday(bd)
 
-    @property
-    def address(self) -> PostAddress:
-        return self.__address
-    
-    @address.setter
-    def address(self, address):
-        self.__address = PostAddress(address)
+    def add_phone(self, phone: str):
+        """Add phone to contact"""
+        self.__phones.append(Phone(phone))
+
+    def remove_phone(self, phone: str) -> bool:
+        """Delete contact from phone"""
+        phone_obj = Phone(phone)
+        try:
+            self.__phones.remove(phone_obj)
+            return True
+        except ValueError:
+            return False
+
+    def add_email(self, email: str):
+        """Add email to contact"""
+        self.__emails.append(Email(email))
+
+    def remove_email(self, email: str) -> bool:
+        """Delete email from contact"""
+        email_obj = Email(email)
+        try:
+            self.__emails.remove(email_obj)
+            return True
+        except ValueError:
+            return False
 
     def __str__(self):
-        return f"Name: {self.name}, bd: {self.birthday}, phones: {self.phones}, emails: {self.emails}, address: {self.address}"
+        return f"Name: {self.name}, bd: {self.birthday}, phones: {self.phones}, emails: {self.emails}"
 
 
 class AddressBook(UserDict[str, Record]):
     """
-    Address book 
+    Address book
     """
     def add_record(self, record: Record):
         self.data[self._normalize_name(record.name)] = record
 
-    def find(self, criteria: str) -> list[Record]:
-        """
-        Search for a contact using criteria.
-        The criteria may match the name, phone numbers, emails, or address.
-        """
-        result = []
-        criteria = criteria.lower()
-        for rec in self.values():
-            if str(rec.name).lower().find(criteria) >= 0 \
-                or str(rec.phones).lower().find(criteria) >= 0 \
-                or str(rec.emails).lower().find(criteria) >= 0 \
-                or str(rec.address).lower().find(criteria) >= 0 \
-            :
-                result.append(rec)
-                continue
-
-        return result
+    def find(self, name: str) -> Record | None:
+        return self.data.get(self._normalize_name(name))
 
     def delete(self, name: str):
         self.data.pop(self._normalize_name(name), None)
@@ -284,7 +286,7 @@ class AddressBook(UserDict[str, Record]):
                 continue
             try:
                 bd = bd.replace(year=today.year)
-            except ValueError: 
+            except ValueError:
                 bd = bd.replace(year=today.year, day=28)
 
             if 0 <= (bd - today).days <= 6:
@@ -298,6 +300,6 @@ class AddressBook(UserDict[str, Record]):
 
     def __getitem__(self, name: str) -> Record:
         return self.data[self._normalize_name(name)]
-    
+
     def __setitem__(self, name: str, item: Record) -> None:
-        raise KeyError("Error. Use method add_record()")
+        self.data[self._normalize_name(name)] = item
