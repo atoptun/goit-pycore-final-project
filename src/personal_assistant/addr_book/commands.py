@@ -7,6 +7,7 @@ from typing import Callable
 from src.personal_assistant.addr_book import exceptions as excp
 from src.personal_assistant.addr_book.classes import AddressBook, Record, Phone, Email, PhoneFactory, EmailFactory
 from src.personal_assistant.common import promt_pretty
+from src.personal_assistant.addr_book.exceptions import ContactExist, BirthdayFormatError
 
 
 init(autoreset=True)
@@ -53,33 +54,22 @@ def contact_info_format(rec: Record) -> str:
 
 @input_error
 def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
-
-    if not args:
-        name = promt_pretty("Enter contact name")
-    else:
-        name = args[0]
-
-    if not name:
-        return "Name is required."
-
+    name = args[0]
     found_contact = book.get(name)
 
     if found_contact:  # TODO: just return error
-        print()
-        print(found_contact)
-        print(
-            "We already have the contact. Maybe you wanna edit the contact with command: change [name]")
-        print()
-        return
+        raise ContactExist("Contact already exist!!")
 
     record = Record(name)
-
     print("Input contact info")
 
-    phones = promt_pretty("Phone (10 dig. Example: 1234567890, 0987654321)")
+    phones = promt_pretty("Phone (8-15) dig. Example: 1234567890, 0987654321)")
     phones, errors = PhoneFactory.create(phones)
     record.phones.extend(phones)
-    # TODO: show errors
+
+    if errors:
+        for error in errors:
+            print(error)
 
     address = promt_pretty("Address")
     record.address = address
@@ -88,10 +78,16 @@ def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
     email = promt_pretty("Email (Example: test@test.ua, test@test.ua)")
     emails, errors = EmailFactory.create(email)
     record.emails.extend(emails)
-    # TODO: show errors
+
+    if errors:
+        for error in errors:
+            print(error)
 
     birthday = promt_pretty("Birthday(DD.MM.YYYY)")
-    record.birthday = birthday
+    try:
+        record.birthday = birthday
+    except BirthdayFormatError as err:
+        print(err)
 
     book.add_record(record)
 
