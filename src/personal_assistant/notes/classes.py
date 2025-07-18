@@ -26,7 +26,7 @@ class NoteRecord(object):
         return self.__title
     
     @title.setter
-    def title1(self, title: str):
+    def title(self, title: str):
         self.__title = title
 
     @property
