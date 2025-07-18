@@ -20,7 +20,7 @@ COMMANDS_HELP = """Address book commands:
     help                                          | this help
     back                                          | back to main menu
     close, exit, quit                             | exit
-    
+    qwerty
 """
 
 
