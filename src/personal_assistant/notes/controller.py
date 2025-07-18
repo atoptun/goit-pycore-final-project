@@ -31,6 +31,8 @@ def main():
                 print(commands.cmd_add_note(book))
     #         case "change":
     #             print(commands.cmd_change_contact(book, args))
+            case "search":
+                print(commands.cmd_search_notes(book, args))
     #         case "phone":
     #             print(commands.cmd_show_phones(book, args))
     #         case "add-birthday" | "add-bd":
