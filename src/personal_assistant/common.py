@@ -4,10 +4,13 @@ from typing import Generic, TypeVar, Iterable, Any
 from pathlib import Path
 from appdirs import user_data_dir
 from colorama import Fore, Back, Style, init
+from prompt_toolkit import prompt, PromptSession
+from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.formatted_text import HTML
+from prompt_toolkit.history import FileHistory
 
 
 T = TypeVar('T')
-
 
 COMMANDS_HELP = """Module commands:
     book                                     | address book
@@ -59,13 +62,31 @@ def get_data_path(filename: str) -> Path:
     return data_dir / filename
 
 
-def read_command() -> str:
-    """Read command and handle Ctrl+C"""
+def promt_pretty(message: str, default_text: str = "", multiline: bool = False) -> str | None:
+    """Read pretty user input and handle Ctrl+C"""
     try:
-        return input(f"{Fore.YELLOW}Command:{Fore.RESET} ")
+        message = f"{message} (Alt+Enter or Esc→Enter to end):\n" if multiline else f"{message}: "
+        return prompt(HTML(f"<ansimagenta>{message}</ansimagenta>"), 
+                      default=default_text, 
+                      multiline=multiline
+                      )
+    except KeyboardInterrupt as e:
+        return None
+
+
+# Used for promt command
+cmd_history = FileHistory(get_data_path(".command_history"))
+promt_session = PromptSession(history=cmd_history)
+
+
+def read_command(message: str = "Command: ", commands: list[str] = [], default: str = "exit") -> str:
+    """Read command and handle Ctrl+C (returns default)"""
+    try:
+        command_completer = WordCompleter(commands, ignore_case=True, match_middle=True) 
+        return promt_session.prompt(HTML(f"<ansiyellow>{message}</ansiyellow>"),
+                      completer=command_completer)
     except KeyboardInterrupt:
-        print("\b\bexit")
-        return "exit"
+        return default
 
 
 def save_data(book: Any, path: Path|str ="data.pkl"):
