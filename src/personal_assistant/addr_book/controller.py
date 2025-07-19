@@ -33,6 +33,8 @@ def main():
                 print(commands.cmd_search_contacts(book, args))
             case "edit":
                 print(commands.cmd_edit_contact(book, args))
+            case "delete":
+                print(commands.cmd_delete_contact(book, args))
             case "birthdays" | "bds":
                 print(commands.cmd_birthdays(book, args))
             case "all":

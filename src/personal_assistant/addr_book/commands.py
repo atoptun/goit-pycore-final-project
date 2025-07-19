@@ -199,6 +199,26 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
     return f"{Fore.GREEN}Contact updated successfully!"
 
 
+@input_error
+def cmd_delete_contact(book: AddressBook, args: list[str]) -> str:
+    """Command: delete <name>"""
+    name = args[0]
+    record = book.get(name)
+    if not record:
+        raise excp.ContactNotFound(f"Contact '{name}' not found")
+
+    print(f"{Fore.CYAN}Contact to delete:")
+    print(record)
+    print()
+
+    y_n = read_command("Are you sure you want to delete this contact? (yes\\no): ")
+    if y_n == "no" or y_n == "n":
+        return f"{Fore.YELLOW}Contact deletion cancelled."
+
+    book.delete(name)
+    return f"{Fore.GREEN}Contact '{name}' deleted successfully!"
+
+
 # @input_error
 # def cmd_show_phones(book: AddressBook, args: list[str]) -> str:
 #     """Command: phone <name>"""
@@ -276,3 +296,4 @@ def get_function_names():
 
 
 funcs_local = get_function_names()
+
