@@ -35,6 +35,8 @@ def main():
             #     print(commands.cmd_change_contact(book, args))
             case "edit":
                 print(commands.cmd_edit_contact(book, args))
+            case "delete":
+                print(commands.cmd_delete_contact(book, args))
             # case "phone":
             #     print(commands.cmd_show_phones(book, args))
             # case "add-birthday" | "add-bd":
