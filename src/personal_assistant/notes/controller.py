@@ -31,6 +31,8 @@ def main():
                 print(commands.cmd_search_notes(book, args))
             case "change":
                 print(commands.cmd_change_note(book, args))
+            case "delete":
+                print(commands.cmd_delete_note(book, args))
             case "all":
                 print(commands.cmd_show_all(book))
             case "close" | "exit" | "quit" | "back":
