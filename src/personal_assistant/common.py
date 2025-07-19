@@ -23,30 +23,6 @@ COMMANDS_HELP = """Module commands:
     close, exit, quit                        | exit
     
 """
-NOTE_TABLE_CONFIG = [
-    {
-        "header": "ID", 
-        "data_key": "id", 
-        "style": "dim", 
-        "width": 30, 
-        "no_wrap": True
-    },
-    {
-        "header": "Title", 
-        "data_key": "title", 
-        "style": "bold magenta"
-    },
-    {
-        "header": "Text", 
-        "data_key": "text"
-    },
-    {
-        "header": "Tags", 
-        "data_key": "tags", 
-        "justify": "right", 
-        "style": "green"
-    }
-]
 
 
 class UniqueList(UserList, Generic[T]):
@@ -129,12 +105,6 @@ def load_data(path: Path|str = "data.pkl") -> Any:
             return pickle.load(f)
     except FileNotFoundError:
         return None
-
-
-class ApplicationBaseError(Exception):
-    def __init__(self, msg, *args: object) -> None:
-        self.strerror = msg
-        super().__init__(*args)
 
 
 def draw_table(title: str, columns_config: List[Dict], data: List[Any]):

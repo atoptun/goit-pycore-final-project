@@ -5,7 +5,9 @@ from colorama import Fore, Back, Style, init
 from functools import wraps
 from src.personal_assistant.notes import exceptions as excp
 from src.personal_assistant.notes.classes import NoteRecord, Notes
-from src.personal_assistant.common import promt_pretty, draw_table, NOTE_TABLE_CONFIG
+from src.personal_assistant.common import promt_pretty
+from src.personal_assistant.notes import views
+
 
 
 COMMANDS_HELP = """Notes commands:
@@ -46,7 +48,11 @@ def parse_input(line: str) -> tuple:
 @input_error
 def cmd_add_note(notes: Notes):
     title = promt_pretty("Enter a title")
+    if title is None:
+        raise excp.CancelCommand()
     text = promt_pretty("Enter a text the note", multiline=True)
+    if text is None:
+        raise excp.CancelCommand()
 
     record = NoteRecord(title, text)
 
@@ -55,16 +61,12 @@ def cmd_add_note(notes: Notes):
     return "Note added."
 
 @input_error
-def cmd_find_all(notes: Notes):
+def cmd_show_all(notes: Notes):
     if not notes.data:
         return "No notes found."
     notes_list = list(notes.data.values())
    
-    draw_table(
-        title = "📝 All Notes",
-        columns_config = NOTE_TABLE_CONFIG,
-        data = notes_list
-    )
+    views.draw_notes("📝 All Notes", notes_list)
     return ""
 
 
@@ -98,12 +100,16 @@ def cmd_change_note(notes: Notes, args: list[str]):
     record = notes.get(id)
 
     if not record:
-        raise excp.NotExist()
+        raise excp.NoteNotFound()
 
     title = promt_pretty("Title", default_text=record.title)
+    if title is None:
+        raise excp.CancelCommand()
     record.title = title
 
     text = promt_pretty("Text", default_text=record.text, multiline=True)
+    if text is None:
+        raise excp.CancelCommand()
     record.text = text
 
     return "Note updated."

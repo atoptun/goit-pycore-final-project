@@ -1,8 +1,7 @@
-from src.personal_assistant.common import ApplicationBaseError
+from src.personal_assistant.exceptions import ApplicationBaseError, CancelCommand
 
 class NoteBaseError(ApplicationBaseError): ...
 
-class NoteNotFound(ApplicationBaseError): ...
-
-class NotExist(NoteBaseError): ...
-
+class NoteNotFound(ApplicationBaseError):
+    def __init__(self, msg: str = "Note not found", *args: object) -> None:
+        super().__init__(msg, args)

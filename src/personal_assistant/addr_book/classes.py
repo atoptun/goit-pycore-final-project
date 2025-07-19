@@ -57,7 +57,7 @@ class Phone(Field):
             return self.value == self._clear_phone(str(other))
         except:
             return False
-
+    
 
 class PhoneFactory:
     @staticmethod
@@ -73,8 +73,12 @@ class PhoneFactory:
                 phone = Phone(item)
                 phones.append(phone)
             except excp.PhoneFormatError as e:
-                errors.append(str(e))
+                errors.append(e.strerror)
         return phones, errors
+
+class PhoneList(UniqueList[Phone]):
+    def __str__(self) -> str:
+        return '\n'.join(str(p) for p in self.data)
 
 
 class Email(Field):
@@ -130,8 +134,13 @@ class EmailFactory:
                 email = Email(item)
                 emails.append(email)
             except excp.EmailFormatError as e:
-                errors.append(str(e))
+                errors.append(e.strerror)
         return emails, errors
+
+
+class EmailList(UniqueList[Email]):
+    def __str__(self) -> str:
+        return '\n'.join(str(p) for p in self.data)
 
 
 class Birthday(Field):
@@ -161,10 +170,6 @@ class PostAddress(Field):
     def __str__(self) -> str:
         return self.value if self.value is not None else "Unknown"
 
-
-class EmailList(UniqueList[Email]): ...
-
-class PhoneList(UniqueList[Phone]): ...
 
 
 # class PhoneList(UserList):
@@ -307,6 +312,9 @@ class AddressBook(UserDict[str, Record]):
 
     def _normalize_name(self, name: str | Name) -> str:
         return str(name).strip().lower()
+
+    def get(self, key, default=None):
+        return super().get(self._normalize_name(key), default)
 
     def __getitem__(self, name: str) -> Record:
         return self.data[self._normalize_name(name)]

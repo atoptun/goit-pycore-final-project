@@ -31,16 +31,16 @@ def main():
                 print(commands.cmd_add_contact(book, args))
             case "search":
                 print(commands.cmd_search_contacts(book, args))
-            case "change":
-                print(commands.cmd_change_contact(book, args))
+            # case "change":
+            #     print(commands.cmd_change_contact(book, args))
             case "edit":
                 print(commands.cmd_edit_contact(book, args))
-            case "phone":
-                print(commands.cmd_show_phones(book, args))
-            case "add-birthday" | "add-bd":
-                print(commands.cmd_add_birthday(book, args))
-            case "show-birthday" | "show-bd":
-                print(commands.cmd_show_birthday(book, args))
+            # case "phone":
+            #     print(commands.cmd_show_phones(book, args))
+            # case "add-birthday" | "add-bd":
+            #     print(commands.cmd_add_birthday(book, args))
+            # case "show-birthday" | "show-bd":
+            #     print(commands.cmd_show_birthday(book, args))
             case "birthdays" | "bds":
                 print(commands.cmd_birthdays(book, args))
             case "all":
