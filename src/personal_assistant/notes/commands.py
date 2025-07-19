@@ -115,4 +115,26 @@ def cmd_change_note(notes: Notes, args: list[str]):
     return "Note updated."
 
 
+@input_error
+def cmd_delete_note(notes: Notes, args: list[str]) -> str:
+    """Command: delete <id>"""
+    note_id = args[0]
+    record = notes.get(note_id)
+
+    if not record:
+        raise excp.NoteNotFound(f"Note with ID '{note_id}' not found")
+
+    print(f"{Fore.CYAN}Note to delete:")
+    print(record)
+    print()
+
+    from src.personal_assistant.common import read_command
+    y_n = read_command("Are you sure you want to delete this note? (yes\\no): ")
+    if y_n == "no" or y_n == "n":
+        return f"{Fore.YELLOW}Note deletion cancelled."
+
+    notes.delete(note_id)
+    return f"{Fore.GREEN}Note with ID '{note_id}' deleted successfully!"
+
+
 funcs_local = get_function_names()
