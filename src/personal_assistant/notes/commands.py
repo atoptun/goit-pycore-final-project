@@ -4,7 +4,7 @@ from pathlib import Path
 from colorama import Fore, Back, Style, init
 from functools import wraps
 from src.personal_assistant.notes import exceptions as excp
-from src.personal_assistant.notes.classes import Notes, NoteRecord
+from src.personal_assistant.notes.classes import NoteRecord, Notes
 from src.personal_assistant.common import promt_pretty
 
 
@@ -76,6 +76,24 @@ def get_function_names():
         name for name, obj in inspect.getmembers(current_module, inspect.isfunction)
         if obj.__module__ == current_module.__name__
     ]
+
+
+def cmd_change_note(notes: Notes, args: list[str]):
+    """Command: change title, message"""
+    id = args[0]
+
+    record = notes.get(id)
+
+    if not record:
+        raise excp.NotExist()
+
+    title = promt_pretty("Title", default_text=record.title)
+    record.title = title
+
+    text = promt_pretty("Text", default_text=record.text, multiline=True)
+    record.text = text
+
+    return "Note updated."
 
 
 funcs_local = get_function_names()
