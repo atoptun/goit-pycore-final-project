@@ -143,8 +143,7 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
     from src.personal_assistant.common import promt_pretty
 
     current_phones = str(record.phones) if record.phones else ""
-    print(f"{Fore.GREEN}Edit phones (current: {current_phones})")
-    new_phones_input = promt_pretty("Phones (Example: 1234567890, 0987654321)", current_phones)
+    new_phones_input = promt_pretty("Phones (Example: 1234567890, 0987654321)", current_phones, multiline=True)
 
     if new_phones_input is not None and new_phones_input.strip() != current_phones:
         phones, errors = PhoneFactory.create(new_phones_input)
@@ -155,8 +154,7 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
         print(f"{Fore.GREEN}Phones updated.")
 
     current_emails = str(record.emails) if record.emails else ""
-    print(f"{Fore.GREEN}Edit emails (current: {current_emails})")
-    new_emails_input = promt_pretty("Emails (Example: test@test.ua, user@example.com)", current_emails)
+    new_emails_input = promt_pretty("Emails (Example: test@test.ua, user@example.com)", current_emails, multiline=True)
 
     if new_emails_input is not None and new_emails_input.strip() != current_emails:
         emails, errors = EmailFactory.create(new_emails_input)
@@ -167,15 +165,13 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
         print(f"{Fore.GREEN}Emails updated.")
 
     current_address = str(record.address) if record.address.value else ""
-    print(f"{Fore.GREEN}Edit address (current: {current_address})")
-    new_address = promt_pretty("Address (multiline supported)", current_address, multiline=True)
+    new_address = promt_pretty("Address", current_address, multiline=True)
 
     if new_address is not None and new_address.strip() != current_address:
         record.address = new_address.strip()
         print(f"{Fore.GREEN}Address updated.")
 
     current_birthday = str(record.birthday) if record.birthday.value else ""
-    print(f"{Fore.GREEN}Edit birthday (current: {current_birthday})")
     new_birthday = promt_pretty("Birthday (DD.MM.YYYY)", current_birthday)
 
     if new_birthday is not None and new_birthday.strip() != current_birthday:
