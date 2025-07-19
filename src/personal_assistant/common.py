@@ -5,9 +5,10 @@ from pathlib import Path
 from appdirs import user_data_dir
 from colorama import Fore, Back, Style, init
 from prompt_toolkit import prompt, PromptSession
-from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.completion import WordCompleter, Completer, Completion
 from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.history import FileHistory
+from prompt_toolkit.shortcuts import CompleteStyle
 from rich.console import Console
 from rich.table import Table
 import rich.box as box
@@ -70,13 +71,26 @@ def promt_pretty(message: str, default_text: str = "", multiline: bool = False) 
 
 # Used for promt command
 cmd_history = FileHistory(get_data_path(".command_history"))
-promt_session = PromptSession(history=cmd_history)
+promt_session = PromptSession(
+    history=cmd_history,
+    complete_style=CompleteStyle.READLINE_LIKE,
+    complete_while_typing=False,
+)
+
+class FirstWordOnlyCompleter(WordCompleter):
+    def get_completions(self, document, complete_event):
+        if not document.text_before_cursor.strip():
+            return
+        if " " in document.text_before_cursor:
+            return
+
+        yield from super().get_completions(document, complete_event)
 
 
 def read_command(message: str = "Command: ", commands: list[str] = [], default: str = "exit") -> str:
     """Read command and handle Ctrl+C (returns default)"""
     try:
-        command_completer = WordCompleter(commands, ignore_case=True, match_middle=True) 
+        command_completer = FirstWordOnlyCompleter(commands , ignore_case=True, match_middle=True) # , ignore_case=True, match_middle=True
         return promt_session.prompt(HTML(f"<ansiyellow>{message}</ansiyellow>"),
                       completer=command_completer)
     except KeyboardInterrupt:

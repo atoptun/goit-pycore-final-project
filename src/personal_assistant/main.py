@@ -6,13 +6,17 @@ from src.personal_assistant.notes.controller import main as notes_main
 from src.personal_assistant.views import draw_help
 
 
+init(autoreset=True)
+
 
 MAIN_MENU_COMMANDS_LIST = [
-    types.SimpleNamespace(command="book", description="address book"),
-    types.SimpleNamespace(command="notes", description="notes"),
-    types.SimpleNamespace(command="help, ?", description="this help"),
-    types.SimpleNamespace(command="close, exit, quit", description="exit")
+    types.SimpleNamespace(command="book", cmd="book", description="address book"),
+    types.SimpleNamespace(command="notes", cmd="notes", description="notes"),
+    types.SimpleNamespace(command="help, ?", cmd="help", description="this help"),
+    types.SimpleNamespace(command="close, exit, quit", cmd="close, exit, quit", description="exit")
 ]
+
+COMMAND_LIST = [cmd.strip() for item in MAIN_MENU_COMMANDS_LIST for cmd in item.cmd.split(",")]
 
 def cmd_show_help():
     draw_help("main commands help", MAIN_MENU_COMMANDS_LIST)
@@ -25,7 +29,7 @@ def main():
     command = None
     while True:
         if command is None:
-            command = read_command()
+            command = read_command("Command: ", commands=COMMAND_LIST)
             if not command:
                 continue
         # command, *args = commands.parse_input(cmd_str)

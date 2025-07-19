@@ -13,19 +13,19 @@ from personal_assistant.addr_book import views
 from src.personal_assistant.views import draw_help
 
 
-init(autoreset=True)
-
 ADDRESS_BOOK_COMMANDS_LIST = [
-    types.SimpleNamespace(command="add [name]", description="add contact"),
-    types.SimpleNamespace(command="search [value]", description="search contacts by name, phone, email, address"),
-    types.SimpleNamespace(command="edit [name]", description="edit contact"),
-    types.SimpleNamespace(command="delete [name]", description="delete contact"),
-    types.SimpleNamespace(command="birthdays [days]", description="show birthdays in coming days (default 7 days)"),
-    types.SimpleNamespace(command="all", description="show all contacts"),
-    types.SimpleNamespace(command="help", description="this help"),
-    types.SimpleNamespace(command="back", description="back to main menu"),
-    types.SimpleNamespace(command="close, exit, quit", description="exit")
+    types.SimpleNamespace(command="add <name>", cmd="add", description="add contact"),
+    types.SimpleNamespace(command="search <criteria>", cmd="search", description="search contacts by name, phone, email, address"),
+    types.SimpleNamespace(command="edit <name>", cmd="edit", description="edit contact"),
+    types.SimpleNamespace(command="delete <name>", cmd="delete", description="delete contact"),
+    types.SimpleNamespace(command="birthdays <days>", cmd="birthdays", description="show birthdays in coming days (default 7 days)"),
+    types.SimpleNamespace(command="all", cmd="all", description="show all contacts"),
+    types.SimpleNamespace(command="help, ?", cmd="help", description="this help"),
+    types.SimpleNamespace(command="back", cmd="back", description="back to main menu"),
+    types.SimpleNamespace(command="close, exit, quit", cmd="close, exit, quit", description="exit")
 ]
+
+COMMAND_LIST = [cmd.strip() for item in ADDRESS_BOOK_COMMANDS_LIST for cmd in item.cmd.split(",")]
 
 
 def input_error(func):
@@ -45,7 +45,7 @@ def input_error(func):
 
 @input_error
 def cmd_show_help():
-    draw_help("books commands help", ADDRESS_BOOK_COMMANDS_LIST)
+    draw_help("Addressbook commands help", ADDRESS_BOOK_COMMANDS_LIST)
 
 
 @input_error

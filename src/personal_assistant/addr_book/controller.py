@@ -10,14 +10,12 @@ init(autoreset=True)
 ADDR_BOOK_FILENAME = get_data_path("addressbook.pkl")
 
 def main():
-    # print(f"{Fore.CYAN}Welcome to the assistant bot!")
-
     data = load_data(ADDR_BOOK_FILENAME)
     book = cast(AddressBook, data) if data else AddressBook()
     print(f"{Fore.CYAN}Addressbook contains {len(book.keys())} contacts")
 
     while True:
-        cmd_str = read_command("Book command: ")
+        cmd_str = read_command("Book command: ", commands=commands.COMMAND_LIST)
         if not cmd_str:
             continue
         command, *args = commands.parse_input(cmd_str)

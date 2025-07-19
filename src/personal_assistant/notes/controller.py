@@ -17,7 +17,7 @@ def main():
     print(f"{Fore.CYAN}Notes contains {len(book.keys())} records")
 
     while True:
-        cmd_str = read_command("Notes command: ")
+        cmd_str = read_command("Notes command: ", commands=commands.COMMAND_LIST)
         if not cmd_str:
             continue
         command, *args = commands.parse_input(cmd_str)
