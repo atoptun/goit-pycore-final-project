@@ -38,8 +38,8 @@ def promt_autocomlite():
 
 
 if __name__ == "__main__":
-    text = promt_pretty("Enter text", "qweqwe\nasdsad", multiline=True)
-    # text = read_command("Command: ", commands=["add", "edit", "del"])
+    # text = promt_pretty("Enter text", "qweqwe\nasdsad", multiline=True)
+    text = common_read_command("Command: ", commands=["add", "edit", "del"])
     # text = common_read_command("Command: ", commands=["add", "edit", "del"])
     print("text:" , text)
 

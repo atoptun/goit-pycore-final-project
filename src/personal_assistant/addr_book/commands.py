@@ -1,6 +1,7 @@
 import inspect
 import sys
 from pathlib import Path
+import types
 from colorama import Fore, Back, Style, init
 from functools import wraps
 from typing import Callable
@@ -9,22 +10,22 @@ from src.personal_assistant.addr_book.classes import AddressBook, Record, Phone,
 from src.personal_assistant.common import promt_pretty, read_command
 from src.personal_assistant.addr_book.exceptions import ContactExist, BirthdayFormatError
 from personal_assistant.addr_book import views
+from src.personal_assistant.views import draw_help
 
 
 init(autoreset=True)
 
-COMMANDS_HELP = """Address book commands:
-    add [name]                                    | add contact
-    search [value]                                | search contacts by name, phone, email, address
-    edit [name]                                   | edit contact
-    delete [name]                                 | delete contact
-    birthdays [days]                              | show birthdays in coming days (default 7 days)
-    all                                           | show all contacts
-    help                                          | this help
-    back                                          | back to main menu
-    close, exit, quit                             | exit
-    
-"""
+ADDRESS_BOOK_COMMANDS_LIST = [
+    types.SimpleNamespace(command="add [name]", description="add contact"),
+    types.SimpleNamespace(command="search [value]", description="search contacts by name, phone, email, address"),
+    types.SimpleNamespace(command="edit [name]", description="edit contact"),
+    types.SimpleNamespace(command="delete [name]", description="delete contact"),
+    types.SimpleNamespace(command="birthdays [days]", description="show birthdays in coming days (default 7 days)"),
+    types.SimpleNamespace(command="all", description="show all contacts"),
+    types.SimpleNamespace(command="help", description="this help"),
+    types.SimpleNamespace(command="back", description="back to main menu"),
+    types.SimpleNamespace(command="close, exit, quit", description="exit")
+]
 
 
 def input_error(func):
@@ -40,6 +41,11 @@ def input_error(func):
         except Exception as e:
             return f"{Fore.RED}Error: {e}"
     return wraper
+
+
+@input_error
+def cmd_show_help():
+    draw_help("books commands help", ADDRESS_BOOK_COMMANDS_LIST)
 
 
 @input_error
