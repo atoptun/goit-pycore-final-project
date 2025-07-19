@@ -48,13 +48,26 @@ def cmd_add_note(notes: Notes):
     title = promt_pretty("Enter a title")
     text = promt_pretty("Enter a text the note", multiline=True)
 
-    record = NoteRecord()
-    record.title = title
-    record.text = text
+    record = NoteRecord(title, text)
 
     notes.add(record)
 
     return "Note added."
+
+
+@input_error
+def cmd_search_notes(note: Notes, args: list[str]):
+    search_value = " ".join(args)
+
+    if not search_value.strip():
+        raise ValueError()
+
+    found_notes = note.find(search_value)
+
+    if not found_notes:
+        return "Not found a note. You look all notes with command: all"
+
+    return "\n".join([str(record) for record in found_notes])
 
 
 def get_function_names():
