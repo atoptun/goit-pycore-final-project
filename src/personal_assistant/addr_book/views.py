@@ -4,7 +4,6 @@ from src.personal_assistant.addr_book.classes import Record
 from src.personal_assistant.common import draw_table
 
 
-
 def contact_info_format(rec: Record) -> str:
     return f"Name: {Fore.YELLOW}{rec.name}{Fore.RESET}," + \
         f" birthday: {Fore.CYAN}{rec.birthday}{Fore.RESET}," + \

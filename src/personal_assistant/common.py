@@ -15,15 +15,6 @@ import rich.box as box
 
 T = TypeVar('T')
 
-COMMANDS_HELP = """Module commands:
-    book                                     | address book
-    notes                                    | notes
-    help, ?                                  | this help
-    back                                     | back to main menu
-    close, exit, quit                        | exit
-    
-"""
-
 
 class UniqueList(UserList, Generic[T]):
     def append(self, item: T) -> None:
