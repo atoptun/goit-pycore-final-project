@@ -29,8 +29,8 @@ def main():
                 print(commands.COMMANDS_HELP)
             case "add":
                 print(commands.cmd_add_note(book))
-            case "find":
-                print(commands.cmd_find_all(book))
+            # case "find":
+            #     print(commands.cmd_find_all(book))
     #         case "change":
     #             print(commands.cmd_change_contact(book, args))
             case "search":
@@ -45,8 +45,8 @@ def main():
     #             print(commands.cmd_show_birthday(book, args))
     #         case "birthdays" | "bds":
     #             print(commands.cmd_birthdays(book, args))
-    #         case "all":
-    #             print(commands.cmd_show_all(book, args))
+            case "all":
+                print(commands.cmd_show_all(book))
             case "close" | "exit" | "quit":
                 print(f"{Fore.GREEN}Have a nice day!")
                 break
