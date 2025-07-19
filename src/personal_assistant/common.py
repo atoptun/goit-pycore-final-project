@@ -1,6 +1,6 @@
 import pickle
 from collections import UserList
-from typing import Generic, TypeVar, Iterable, Any
+from typing import Generic, TypeVar, Iterable, List, Dict, Any
 from pathlib import Path
 from appdirs import user_data_dir
 from colorama import Fore, Back, Style, init
@@ -8,6 +8,9 @@ from prompt_toolkit import prompt, PromptSession
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.history import FileHistory
+from rich.console import Console
+from rich.table import Table
+import rich.box as box
 
 
 T = TypeVar('T')
@@ -20,6 +23,30 @@ COMMANDS_HELP = """Module commands:
     close, exit, quit                        | exit
     
 """
+NOTE_TABLE_CONFIG = [
+    {
+        "header": "ID", 
+        "data_key": "id", 
+        "style": "dim", 
+        "width": 30, 
+        "no_wrap": True
+    },
+    {
+        "header": "Title", 
+        "data_key": "title", 
+        "style": "bold magenta"
+    },
+    {
+        "header": "Text", 
+        "data_key": "text"
+    },
+    {
+        "header": "Tags", 
+        "data_key": "tags", 
+        "justify": "right", 
+        "style": "green"
+    }
+]
 
 
 class UniqueList(UserList, Generic[T]):
@@ -108,3 +135,35 @@ class ApplicationBaseError(Exception):
     def __init__(self, msg, *args: object) -> None:
         self.strerror = msg
         super().__init__(*args)
+
+
+def draw_table(title: str, columns_config: List[Dict], data: List[Any]):
+    console = Console()
+    table = Table(
+        title=title, 
+        show_header=True,
+        header_style="bold cyan",
+        box=box.ROUNDED
+    )
+
+    
+    for col_config in columns_config:
+        config = col_config.copy()
+        config.pop('data_key', None) 
+        table.add_column(config.pop('header'), **config)
+
+    
+    for item in data:
+        row_values = []
+        for col_config in columns_config:
+            data_key = col_config['data_key']
+            
+            value = getattr(item, data_key, "N/A")
+            if data_key == 'tags' and isinstance(value, set):
+                value = ", ".join(value) if value else "N/A"
+            
+            row_values.append(str(value))
+        
+        table.add_row(*row_values)
+    
+    console.print(table)

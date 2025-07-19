@@ -5,7 +5,7 @@ from colorama import Fore, Back, Style, init
 from functools import wraps
 from src.personal_assistant.notes import exceptions as excp
 from src.personal_assistant.notes.classes import NoteRecord, Notes
-from src.personal_assistant.common import promt_pretty
+from src.personal_assistant.common import promt_pretty, draw_table, NOTE_TABLE_CONFIG
 
 
 COMMANDS_HELP = """Notes commands:
@@ -53,6 +53,19 @@ def cmd_add_note(notes: Notes):
     notes.add(record)
 
     return "Note added."
+
+@input_error
+def cmd_find_all(notes: Notes):
+    if not notes.data:
+        return "No notes found."
+    notes_list = list(notes.data.values())
+   
+    draw_table(
+        title = "📝 All Notes",
+        columns_config = NOTE_TABLE_CONFIG,
+        data = notes_list
+    )
+    return ""
 
 
 @input_error
