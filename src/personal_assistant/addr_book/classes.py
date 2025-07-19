@@ -65,7 +65,10 @@ class PhoneFactory:
         """Create phones from line, separator ',' """
         phones = []
         errors = []
+        line = str(line).replace("\n", ",")
         for item in line.split(","):
+            if not item.strip():
+                continue
             try:
                 phone = Phone(item)
                 phones.append(phone)
@@ -119,7 +122,10 @@ class EmailFactory:
         """Create emails from line, separator ',' """
         emails = []
         errors = []
+        line = str(line).replace("\n", ",")
         for item in line.split(","):
+            if not item.strip():
+                continue
             try:
                 email = Email(item)
                 emails.append(email)
@@ -274,7 +280,7 @@ class AddressBook(UserDict[str, Record]):
     def delete(self, name: str):
         self.data.pop(self._normalize_name(name), None)
 
-    def get_upcoming_birthdays(self, days: int):
+    def get_upcoming_birthdays(self, days: int=7):
         """
         Returns a list of users whose birthdays are within the next 'days' from today.
         If 'days' is not provided, it defaults to 7 days.

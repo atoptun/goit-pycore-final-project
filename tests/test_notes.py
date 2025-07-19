@@ -2,19 +2,18 @@ import pytest
 from src.personal_assistant.notes.classes import NoteRecord, Notes
 
 def test_create_note():
-    rec = NoteRecord()
-    rec.title = "Title"
-    rec.message = "Message"
-    rec.tags = set(["tag1", "tag2", "tag1"])
+    title = "Title"
+    text = "Message \n asdasd\n#tag1 #tag2 tag1"
+    rec = NoteRecord(title, text)
     assert len(rec.tags) == 2
 
 
 def test_add_note():
     notes = Notes()
-    note1 = NoteRecord()
-    note1.title = "Title"
-    note1.message = "Message"
-    note1.tags = set(["tag1", "tag2", "tag1"])
+
+    title = "Title"
+    text = "Message \n asdasd\n#tag1 #tag2 tag1"
+    note1 = NoteRecord(title, text)
 
     with pytest.raises(KeyError, match="Error. Use method add()"):
         notes["qwe"] = note1
@@ -25,6 +24,10 @@ def test_add_note():
     rec = notes[note1.id]
     assert rec.id == note1.id
 
-    notes.update
+    title = "Title"
+    text = "Message \n asdasd\n#tag10 #tag2 tag12"
+    note2 = NoteRecord(title, text)
+    notes.add(note2)
+    assert len(notes) == 2
 
 

@@ -4,10 +4,8 @@ from pathlib import Path
 from colorama import Fore, Back, Style, init
 from functools import wraps
 from src.personal_assistant.notes import exceptions as excp
-from src.personal_assistant.notes.classes import Notes, NoteRecord
+from src.personal_assistant.notes.classes import NoteRecord, Notes
 from src.personal_assistant.common import promt_pretty, draw_table, NOTE_TABLE_CONFIG
-
-
 
 
 COMMANDS_HELP = """Notes commands:
@@ -38,8 +36,6 @@ def input_error(func):
     return wraper
 
 
-
-
 @input_error
 def parse_input(line: str) -> tuple:
     """Returns a command and arguments"""
@@ -49,15 +45,13 @@ def parse_input(line: str) -> tuple:
 
 @input_error
 def cmd_add_note(notes: Notes):
-    title= promt_pretty("Enter a title")
-    text = promt_pretty("Enter a text the note", multiline = True)
-   
-    record = NoteRecord()
-    record.title = title
-    record.text = text
+    title = promt_pretty("Enter a title")
+    text = promt_pretty("Enter a text the note", multiline=True)
+
+    record = NoteRecord(title, text)
 
     notes.add(record)
-  
+
     return "Note added."
 
 @input_error
@@ -74,12 +68,45 @@ def cmd_find_all(notes: Notes):
     return ""
 
 
+@input_error
+def cmd_search_notes(note: Notes, args: list[str]):
+    search_value = " ".join(args)
+
+    if not search_value.strip():
+        raise ValueError()
+
+    found_notes = note.find(search_value)
+
+    if not found_notes:
+        return "Not found a note. You look all notes with command: all"
+
+    return "\n".join([str(record) for record in found_notes])
+
+
 def get_function_names():
     current_module = sys.modules[__name__]
     return [
         name for name, obj in inspect.getmembers(current_module, inspect.isfunction)
         if obj.__module__ == current_module.__name__
     ]
+
+
+def cmd_change_note(notes: Notes, args: list[str]):
+    """Command: change title, message"""
+    id = args[0]
+
+    record = notes.get(id)
+
+    if not record:
+        raise excp.NotExist()
+
+    title = promt_pretty("Title", default_text=record.title)
+    record.title = title
+
+    text = promt_pretty("Text", default_text=record.text, multiline=True)
+    record.text = text
+
+    return "Note updated."
 
 
 funcs_local = get_function_names()
