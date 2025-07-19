@@ -43,6 +43,12 @@ def input_error(func):
 
 
 @input_error
+def cmd_show_help():
+    # show help from common view
+    pass
+
+
+@input_error
 def parse_input(line: str) -> tuple:
     """Returns a command and arguments"""
     cmd, *args = line.strip().split()

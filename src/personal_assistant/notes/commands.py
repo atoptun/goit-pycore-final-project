@@ -46,6 +46,12 @@ def parse_input(line: str) -> tuple:
 
 
 @input_error
+def cmd_show_help():
+    # show help from common view
+    pass
+
+
+@input_error
 def cmd_add_note(notes: Notes):
     title = promt_pretty("Enter a title")
     if title is None:
