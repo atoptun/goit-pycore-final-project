@@ -3,9 +3,9 @@ import ulid
 
 
 class NoteRecord(object):
-    def __init__(self, title: str, text: str) -> None:
-        self.__id = ulid.new().str
-        self.__tags = set()
+    def __init__(self, title: str, text: str, id: str | None = None) -> None:
+        self.__id = str(id or ulid.new().str).upper()
+        self.__tags = frozenset()
         self.title = title
         self.text = text
 
@@ -15,10 +15,12 @@ class NoteRecord(object):
 
     @property
     def tags(self):
+        """Note tags"""
         return self.__tags
 
     @property
     def title(self):
+        """Note title"""
         return self.__title
 
     @title.setter
@@ -27,49 +29,77 @@ class NoteRecord(object):
 
     @property
     def text(self):
+        """Note text"""
         return self.__text
 
     @text.setter
     def text(self, text: str):
         self.__text = text
-        words = text.replace("\n", " ").split(" ")
-        tags = set([word.strip("#") for word in words if word.startswith("#")])
-        self.__tags = tags
+        self.__tags = self.extract_tags(text)
 
+    @staticmethod
+    def extract_tags(text: str) -> frozenset[str]:
+        words = text.replace("\n", " ").split()
+        return frozenset([word.strip("#") for word in words if word.startswith("#")])
+    
     def __str__(self) -> str:
         return f"id: {self.id}, title: {self.title}, message: {self.text}, tags: {self.tags}"
 
 
 class Notes(UserDict[str, NoteRecord]):
 
-    def add(self, note: NoteRecord):
+    def __normalize_key(self, key: str) -> str:
+        return str(key).upper()
+    
+    def add(self, note: NoteRecord) -> None:
+        """
+        Add note. 
+        Raises:
+            KeyError: if duplicate note ID
+        """
+        if note.id in self.data:
+            raise KeyError(f"Note with id {note.id} already exists.")
         self.data[note.id] = note
 
-    def delete(self, id: str):
-        self.data.pop(str(id).upper())
+    def delete(self, key: str) -> NoteRecord | None:
+        """
+        Delete note.
+        Returns deleted note or None if not found
+        """
+        return self.data.pop(self.__normalize_key(key), None)
 
-    def get(self, key, default=None):
-        return super().get(str(key).upper(), default)
+    def get(self, key, default=None) -> NoteRecord | None:
+        """Returns note by ID or None if not found"""
+        return super().get(self.__normalize_key(key), default)
 
     def __setitem__(self, key: str, item: NoteRecord) -> None:
         raise KeyError("Error. Use method add()")
 
     def __getitem__(self, key: str) -> NoteRecord:
-        return super().__getitem__(str(key).upper())
+        return super().__getitem__(self.__normalize_key(key))
+
+    def __contains__(self, key: object) -> bool:
+        try:
+            return self.__normalize_key(str(key)) in self.data
+        except Exception:
+            return False
 
     def find(self, criteria: str) -> list[NoteRecord]:
         """
-        Search for a note using criteria.
-        The criteria may match the title, text, or tags.
+        Find notes that have matching tags.
+        Returns notes sorted by: 
+            number of matching tags, 
+            alphabetical order of matching tags, 
+            title
         """
         result = []
-        criteria = criteria.lower()
-        criteria_words = set(criteria.split(" "))
+        search_tags = set(criteria.lower().split())
 
         for rec in self.values():
-            if str(rec.title).lower().find(criteria) >= 0 \
-                    or str(rec.text).lower().find(criteria) >= 0 \
-                    or bool(rec.tags & criteria_words):
-                result.append(rec)
+            rec_tags = set(tag.lower() for tag in rec.tags)
+            matched_tags = rec_tags & search_tags
+            if matched_tags:
+                result.append((rec, matched_tags))
 
-        return result
+        result.sort(key=lambda pair: (-len(pair[1]), sorted(pair[1]), pair[0].title.lower()))
+        return [rec for rec, _ in result]

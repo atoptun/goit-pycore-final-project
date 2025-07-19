@@ -1,5 +1,6 @@
 from collections import UserDict, UserList
 from datetime import datetime, timedelta
+import re
 from src.personal_assistant.addr_book import exceptions as excp
 from src.personal_assistant.common import UniqueList
 
@@ -62,7 +63,10 @@ class Phone(Field):
 class PhoneFactory:
     @staticmethod
     def create(line: str) -> tuple[list[Phone], list[str]]:
-        """Create phones from line, separator ',' """
+        """
+        Create phones from line, separator ',' and linebreak
+        Returns list of Phone and list or errors
+        """
         phones = []
         errors = []
         line = str(line).replace("\n", ",")
@@ -99,8 +103,13 @@ class Email(Field):
     
     @staticmethod
     def _check_email_format(value: str):
-        # TODO: regexp
-        if str(value).count("@") != 1:
+        """
+        Validates basic email format: something@domain.com
+        Raises:
+            EmailFormatError if invalid.
+        """
+        pattern = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+        if not re.match(pattern, value):
             raise excp.EmailFormatError(f"Wrong email format '{value}'.")
     
     @staticmethod
@@ -123,7 +132,10 @@ class Email(Field):
 class EmailFactory:
     @staticmethod
     def create(line: str) -> tuple[list[Email], list[str]]:
-        """Create emails from line, separator ',' """
+        """
+        Create emails from line, separator ',' and linebreak
+        Returns list of Email and list or errors
+        """
         emails = []
         errors = []
         line = str(line).replace("\n", ",")
@@ -145,7 +157,7 @@ class EmailList(UniqueList[Email]):
 
 class Birthday(Field):
     """
-    Field Birthday for address book record
+    Field Birthday for address book record. Date format DD.MM.YYYY.
     """
     def __init__(self, value=None):
         self.value = None
@@ -169,53 +181,6 @@ class PostAddress(Field):
 
     def __str__(self) -> str:
         return self.value if self.value is not None else "Unknown"
-
-
-
-# class PhoneList(UserList):
-#     def __setitem__(self, i, item):
-#         obj = Phone(str(item))
-#         if obj not in self.data:
-#             self.data[i] = obj
-
-#     def append(self, item: str):
-#         obj = Phone(str(item))
-#         if obj not in self.data:
-#             self.data.append(obj)
-
-#     def insert(self, i, item):
-#         obj = Phone(str(item))
-#         if obj not in self.data:
-#             self.data.insert(i, obj)
-
-#     def add(self, phone: str) -> bool:
-#         phone_obj = Phone(phone)
-#         count = len(self.data)
-#         self.data.append(phone_obj)
-#         return count != len(self.data)
-
-#     def delete(self, phone: str) -> bool:
-#         phone_obj = Phone(phone)
-#         for p in self.data:
-#             if p == phone_obj:
-#                 self.data.remove(p)
-#                 return True
-#         return False
-        
-#     def edit(self, phone_old: str, phone_new: str) -> bool:
-#         phone_old_obj = Phone(phone_old)
-#         for i, p in enumerate(self.data):
-#             if p == phone_old_obj:
-#                 self.data[i] = Phone(phone_new)
-#                 return True
-#         return False
-        
-#     def find(self, phone: str):
-#         phone_obj = Phone(phone)
-#         return next((p for p in self.data if p == phone_obj), None)
-    
-#     def __str__(self) -> str:
-#         return '; '.join(str(p) for p in self.data)
 
 
 class Record:
