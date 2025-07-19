@@ -1,8 +1,19 @@
 from colorama import Fore, Back, Style, init
-from src.personal_assistant.common import read_command, COMMANDS_HELP
+from src.personal_assistant.common import read_command
 from src.personal_assistant.addr_book.controller import main as book_main
 from src.personal_assistant.notes.controller import main as notes_main
 
+
+COMMANDS_HELP = """Module commands:
+    book                                     | address book
+    notes                                    | notes
+    help, ?                                  | this help
+    close, exit, quit                        | exit
+    
+"""
+
+def cmd_show_help():
+    pass
 
 
 def main():
@@ -21,7 +32,7 @@ def main():
             case "hello":
                 print(f"{Fore.BLUE}How can I help you?")
             case "help" | "?":
-                print(COMMANDS_HELP)
+                cmd_show_help()
             case "book":
                 command = book_main()
             case "notes":

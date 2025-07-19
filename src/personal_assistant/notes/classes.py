@@ -48,6 +48,9 @@ class Notes(UserDict[str, NoteRecord]):
     def delete(self, id: str):
         self.data.pop(str(id).upper())
 
+    def get(self, key, default=None):
+        return super().get(str(key).upper(), default)
+
     def __setitem__(self, key: str, item: NoteRecord) -> None:
         raise KeyError("Error. Use method add()")
 

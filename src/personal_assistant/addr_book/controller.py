@@ -10,14 +10,14 @@ init(autoreset=True)
 ADDR_BOOK_FILENAME = get_data_path("addressbook.pkl")
 
 def main():
-    print(f"{Fore.CYAN}Welcome to the assistant bot!")
+    # print(f"{Fore.CYAN}Welcome to the assistant bot!")
 
     data = load_data(ADDR_BOOK_FILENAME)
     book = cast(AddressBook, data) if data else AddressBook()
-    print(f"Addressbook contains {len(book.keys())} contacts")
+    print(f"{Fore.CYAN}Addressbook contains {len(book.keys())} contacts")
 
     while True:
-        cmd_str = read_command()
+        cmd_str = read_command("Book command: ")
         if not cmd_str:
             continue
         command, *args = commands.parse_input(cmd_str)
@@ -26,21 +26,13 @@ def main():
             case "hello":
                 print(f"{Fore.BLUE}How can I help you?")
             case "help" | "?":
-                print(commands.COMMANDS_HELP)
+                commands.cmd_show_help()
             case "add":
                 print(commands.cmd_add_contact(book, args))
             case "search":
                 print(commands.cmd_search_contacts(book, args))
-            # case "change":
-            #     print(commands.cmd_change_contact(book, args))
             case "edit":
                 print(commands.cmd_edit_contact(book, args))
-            # case "phone":
-            #     print(commands.cmd_show_phones(book, args))
-            # case "add-birthday" | "add-bd":
-            #     print(commands.cmd_add_birthday(book, args))
-            # case "show-birthday" | "show-bd":
-            #     print(commands.cmd_show_birthday(book, args))
             case "birthdays" | "bds":
                 print(commands.cmd_birthdays(book, args))
             case "all":

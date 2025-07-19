@@ -2,6 +2,9 @@ from src.personal_assistant.notes.classes import NoteRecord
 from src.personal_assistant.common import draw_table
 
 
+## TODO: add help dict and view
+
+
 NOTE_TABLE_CONFIG = [
     {
         "header": "ID", 
