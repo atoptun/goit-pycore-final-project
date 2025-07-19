@@ -28,9 +28,9 @@ def main():
             case "help" | "?":
                 print(commands.COMMANDS_HELP)
             case "add":
-                commands.cmd_add_contact(book, args)
+                print(commands.cmd_add_contact(book, args))
             case "search":
-                commands.cmd_search_contacts(book, args)
+                print(commands.cmd_search_contacts(book, args))
             case "change":
                 print(commands.cmd_change_contact(book, args))
             case "edit":
@@ -51,7 +51,7 @@ def main():
                 print(f"{Fore.RED}Invalid command.")
 
     save_data(book, ADDR_BOOK_FILENAME)
-    
+
     return "exit" if command in {"close", "exit", "quit"} else None
 
 

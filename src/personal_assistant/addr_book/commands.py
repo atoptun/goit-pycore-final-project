@@ -6,6 +6,8 @@ from functools import wraps
 from typing import Callable
 from src.personal_assistant.addr_book import exceptions as excp
 from src.personal_assistant.addr_book.classes import AddressBook, Record, Phone, Email, PhoneFactory, EmailFactory
+from src.personal_assistant.common import promt_pretty
+from src.personal_assistant.addr_book.exceptions import ContactExist, BirthdayFormatError
 
 
 init(autoreset=True)
@@ -55,29 +57,37 @@ def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
     name = args[0]
     found_contact = book.get(name)
 
-    if found_contact: # TODO: just return error
-        print()
-        print(found_contact)
-        print("We already have the contact. Maybe you wanna edit the contact with command: edit")
-        print()
-        return
+    if found_contact:  # TODO: just return error
+        raise ContactExist("Contact already exist!!")
 
     record = Record(name)
-
     print("Input contact info")
 
-    phones = input("Phone (10 dig. Example: 1234567890, 0987654321): ")
+    phones = promt_pretty("Phone (8-15) dig. Example: 1234567890, 0987654321)")
     phones, errors = PhoneFactory.create(phones)
     record.phones.extend(phones)
+
+    if errors:
+        for error in errors:
+            print(error)
+
+    address = promt_pretty("Address")
+    record.address = address
     # TODO: show errors
 
-    email = input("Email (Example: test@test.ua, test@test.ua): ")
+    email = promt_pretty("Email (Example: test@test.ua, test@test.ua)")
     emails, errors = EmailFactory.create(email)
     record.emails.extend(emails)
-    # TODO: show errors
 
-    birthday = input("Birthday(DD.MM.YYYY): ")
-    record.birthday = birthday
+    if errors:
+        for error in errors:
+            print(error)
+
+    birthday = promt_pretty("Birthday(DD.MM.YYYY)")
+    try:
+        record.birthday = birthday
+    except BirthdayFormatError as err:
+        print(err)
 
     book.add_record(record)
 
@@ -89,21 +99,13 @@ def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
 
 @input_error
 def cmd_search_contacts(book: AddressBook, args: list[str]):
-    print()
-    print("Search for a contact. You may match the name, phone numbers, emails, or address.")
-
     search_value = " ".join(args)
     found_contacts = book.find(search_value)
 
     if not found_contacts:
-        print('Not Found Contacts. You can try again: "search"')
-        print()
-        return
+        raise excp.ContactNotFound()
 
-    for record in found_contacts:
-        print(record)
-
-    print()
+    return "\n".join([str(record) for record in found_contacts])
 
 
 @input_error
@@ -224,31 +226,25 @@ def cmd_show_birthday(book: AddressBook, args: list[str]) -> str:
 @input_error
 def cmd_birthdays(book: AddressBook, args: list[str]) -> str:
     """Command: birthdays"""
-    days_str = None
+
     if args:
-        days_str = args[0]
-        try:
-            days = int(days_str)
-        except ValueError:
-            return f"{Fore.RED}Invalid number of days provided. Please enter a valid integer.{Fore.RESET}"
+        days = int(args[0])
+        header = f"{Fore.GREEN}There are birthdays in next {days} days:{Fore.RESET}\n"
+        no_birthdays_msg = f"{Fore.GREEN}There are no birthdays in next {days} days."
+        records = book.get_upcoming_birthdays(days)
     else:
-        days = 7  
+        header = f"{Fore.GREEN}Birthdays in this week:{Fore.RESET}\n"
+        no_birthdays_msg = f"{Fore.GREEN}There are no birthdays this week."
+        records = book.get_upcoming_birthdays()
 
-    if days_str is None:
-        result_message_start = f"{Fore.GREEN}There are birthdays in this week:{Fore.RESET}\n"
-        no_birthdays_message = f"{Fore.GREEN}There are no birthdays this week."
-    else:
-        result_message_start = f"{Fore.GREEN}There are birthdays in next {days} days:{Fore.RESET}\n"
-        no_birthdays_message = f"{Fore.GREEN}There are no birthdays in next {days} days."
-
-    records = book.get_upcoming_birthdays(days)
     if not records:
-        return no_birthdays_message
-    
-    result = result_message_start
+        return no_birthdays_msg
+
+    result = header
     for rec in records:
         result += f"{contact_info_format(rec)}\n"
-    return result
+
+    return result.strip()
 
 
 @input_error

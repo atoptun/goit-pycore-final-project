@@ -1,13 +1,19 @@
 import pickle
 from collections import UserList
-from typing import Generic, TypeVar, Iterable, Any
+from typing import Generic, TypeVar, Iterable, List, Dict, Any
 from pathlib import Path
 from appdirs import user_data_dir
 from colorama import Fore, Back, Style, init
+from prompt_toolkit import prompt, PromptSession
+from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.formatted_text import HTML
+from prompt_toolkit.history import FileHistory
+from rich.console import Console
+from rich.table import Table
+import rich.box as box
 
 
 T = TypeVar('T')
-
 
 COMMANDS_HELP = """Module commands:
     book                                     | address book
@@ -17,6 +23,30 @@ COMMANDS_HELP = """Module commands:
     close, exit, quit                        | exit
     
 """
+NOTE_TABLE_CONFIG = [
+    {
+        "header": "ID", 
+        "data_key": "id", 
+        "style": "dim", 
+        "width": 30, 
+        "no_wrap": True
+    },
+    {
+        "header": "Title", 
+        "data_key": "title", 
+        "style": "bold magenta"
+    },
+    {
+        "header": "Text", 
+        "data_key": "text"
+    },
+    {
+        "header": "Tags", 
+        "data_key": "tags", 
+        "justify": "right", 
+        "style": "green"
+    }
+]
 
 
 class UniqueList(UserList, Generic[T]):
@@ -59,13 +89,31 @@ def get_data_path(filename: str) -> Path:
     return data_dir / filename
 
 
-def read_command() -> str:
-    """Read command and handle Ctrl+C"""
+def promt_pretty(message: str, default_text: str = "", multiline: bool = False) -> str | None:
+    """Read pretty user input and handle Ctrl+C"""
     try:
-        return input(f"{Fore.YELLOW}Command:{Fore.RESET} ")
+        message = f"{message} (Alt+Enter or Esc→Enter to end):\n" if multiline else f"{message}: "
+        return prompt(HTML(f"<ansimagenta>{message}</ansimagenta>"), 
+                      default=default_text, 
+                      multiline=multiline
+                      )
+    except KeyboardInterrupt as e:
+        return None
+
+
+# Used for promt command
+cmd_history = FileHistory(get_data_path(".command_history"))
+promt_session = PromptSession(history=cmd_history)
+
+
+def read_command(message: str = "Command: ", commands: list[str] = [], default: str = "exit") -> str:
+    """Read command and handle Ctrl+C (returns default)"""
+    try:
+        command_completer = WordCompleter(commands, ignore_case=True, match_middle=True) 
+        return promt_session.prompt(HTML(f"<ansiyellow>{message}</ansiyellow>"),
+                      completer=command_completer)
     except KeyboardInterrupt:
-        print("\b\bexit")
-        return "exit"
+        return default
 
 
 def save_data(book: Any, path: Path|str ="data.pkl"):
@@ -87,3 +135,35 @@ class ApplicationBaseError(Exception):
     def __init__(self, msg, *args: object) -> None:
         self.strerror = msg
         super().__init__(*args)
+
+
+def draw_table(title: str, columns_config: List[Dict], data: List[Any]):
+    console = Console()
+    table = Table(
+        title=title, 
+        show_header=True,
+        header_style="bold cyan",
+        box=box.ROUNDED
+    )
+
+    
+    for col_config in columns_config:
+        config = col_config.copy()
+        config.pop('data_key', None) 
+        table.add_column(config.pop('header'), **config)
+
+    
+    for item in data:
+        row_values = []
+        for col_config in columns_config:
+            data_key = col_config['data_key']
+            
+            value = getattr(item, data_key, "N/A")
+            if data_key == 'tags' and isinstance(value, set):
+                value = ", ".join(value) if value else "N/A"
+            
+            row_values.append(str(value))
+        
+        table.add_row(*row_values)
+    
+    console.print(table)

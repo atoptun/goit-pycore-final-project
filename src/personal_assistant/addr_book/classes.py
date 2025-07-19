@@ -65,7 +65,10 @@ class PhoneFactory:
         """Create phones from line, separator ',' """
         phones = []
         errors = []
+        line = str(line).replace("\n", ",")
         for item in line.split(","):
+            if not item.strip():
+                continue
             try:
                 phone = Phone(item)
                 phones.append(phone)
@@ -119,7 +122,10 @@ class EmailFactory:
         """Create emails from line, separator ',' """
         emails = []
         errors = []
+        line = str(line).replace("\n", ",")
         for item in line.split(","):
+            if not item.strip():
+                continue
             try:
                 email = Email(item)
                 emails.append(email)
@@ -274,22 +280,28 @@ class AddressBook(UserDict[str, Record]):
     def delete(self, name: str):
         self.data.pop(self._normalize_name(name), None)
 
-    def get_upcoming_birthdays(self):
-        """Returns a list of users who need to be congratulated during the week."""
+    def get_upcoming_birthdays(self, days: int=7):
+        """
+        Returns a list of users whose birthdays are within the next 'days' from today.
+        If 'days' is not provided, it defaults to 7 days.
+        """
         today = datetime.today().date()
         result = []
+
+        end_date = today + timedelta(days=days -1) 
+
         for key, user in self.data.items():
             bd = user.birthday.value
             if not bd:
                 continue
             try:
-                bd = bd.replace(year=today.year)
-            except ValueError: 
-                bd = bd.replace(year=today.year, day=28)
-
-            if 0 <= (bd - today).days <= 6:
-                if (wd := bd.weekday()) > 4:
-                    bd += timedelta(7 - wd)
+                bd_this_year = bd.replace(year=today.year)
+            except ValueError:
+                bd_this_year = bd.replace(year=today.year, day=28)
+            if today <= bd_this_year <= end_date:
+                if bd_this_year.weekday() > 4: 
+                    days_until_monday = (7 - bd_this_year.weekday())
+                    bd_this_year += timedelta(days=days_until_monday)
                 result.append(user)
         return result
 
