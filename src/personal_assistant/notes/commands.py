@@ -1,27 +1,26 @@
 import inspect
 import sys
 from pathlib import Path
+import types
 from colorama import Fore, Back, Style, init
 from functools import wraps
 from src.personal_assistant.notes import exceptions as excp
 from src.personal_assistant.notes.classes import NoteRecord, Notes
 from src.personal_assistant.common import promt_pretty
 from src.personal_assistant.notes import views
+from src.personal_assistant.views import draw_help
 
 
-
-COMMANDS_HELP = """Notes commands:
-    add                                     | add note
-    search [value]                          | search notes by title or content
-    edit [id]                               | edit note
-    delete [id]                             | delete note
-    all                                     | show all notes
-    help                                    | this help
-    back                                    | back to main menu
-    close, exit, quit                       | exit
-    
-"""
-
+HELP_COMMANDS_LIST = [
+    types.SimpleNamespace(command="add", description="add note"),
+    types.SimpleNamespace(command="search [value]", description="search notes by title or content"),
+    types.SimpleNamespace(command="edit [id]", description="edit note"),
+    types.SimpleNamespace(command="delete [id]", description="delete note"),
+    types.SimpleNamespace(command="all", description="show all notes"),
+    types.SimpleNamespace(command="help", description="this help"),
+    types.SimpleNamespace(command="back", description="back to main menu"),
+    types.SimpleNamespace(command="close, exit, quit", description="exit")
+]
 
 def input_error(func):
     @wraps(func)
@@ -47,8 +46,7 @@ def parse_input(line: str) -> tuple:
 
 @input_error
 def cmd_show_help():
-    # show help from common view
-    pass
+    draw_help("notes commands help", HELP_COMMANDS_LIST)
 
 
 @input_error

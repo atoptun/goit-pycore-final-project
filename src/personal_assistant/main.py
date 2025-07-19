@@ -1,19 +1,21 @@
+import types
 from colorama import Fore, Back, Style, init
 from src.personal_assistant.common import read_command
 from src.personal_assistant.addr_book.controller import main as book_main
 from src.personal_assistant.notes.controller import main as notes_main
+from src.personal_assistant.views import draw_help
 
 
-COMMANDS_HELP = """Module commands:
-    book                                     | address book
-    notes                                    | notes
-    help, ?                                  | this help
-    close, exit, quit                        | exit
-    
-"""
+
+MAIN_MENU_COMMANDS_LIST = [
+    types.SimpleNamespace(command="book", description="address book"),
+    types.SimpleNamespace(command="notes", description="notes"),
+    types.SimpleNamespace(command="help, ?", description="this help"),
+    types.SimpleNamespace(command="close, exit, quit", description="exit")
+]
 
 def cmd_show_help():
-    pass
+    draw_help("main commands help", MAIN_MENU_COMMANDS_LIST)
 
 
 def main():
