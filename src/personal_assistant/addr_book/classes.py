@@ -18,7 +18,7 @@ class Name(Field):
     Field Name for address book record
     """
     def __init__(self, value: str):
-         super().__init__(str(value).strip().capitalize())
+         super().__init__(str(value).strip().title())
 
     def __eq__(self, value) -> bool:
          return str(self.value).casefold() == str(value).strip().casefold()

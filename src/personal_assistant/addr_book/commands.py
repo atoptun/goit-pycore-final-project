@@ -35,7 +35,7 @@ def input_error(func):
     def wraper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except excp.ContactBaseError as e:
+        except excp.ApplicationBaseError as e:
             return f"{Fore.RED}{e.strerror}"
         except (ValueError, IndexError) as e:
             if func.__name__ in funcs_local:
@@ -59,14 +59,14 @@ def parse_input(line: str):
 
 @input_error
 def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
-    name = args[0]
+    name = " ".join(args)
     found_contact = book.get(name)
 
     if found_contact:
         raise ContactExist("Contact already exist!!")
 
     record = Record(name)
-    print("Input contact info")
+    print(f"Input contact info for {name}")
 
     phones_str = promt_pretty("Phones (8-15) dig", multiline=True)
     if phones_str is None:
@@ -118,7 +118,7 @@ def cmd_search_contacts(book: AddressBook, args: list[str]):
 @input_error
 def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
     """Command: edit <name>"""
-    name = args[0]
+    name = " ".join(args)
     record = book.get(name)
     if not record:
         raise excp.ContactNotFound(f"Contact '{name}' not found")
@@ -176,7 +176,7 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
 @input_error
 def cmd_delete_contact(book: AddressBook, args: list[str]) -> str:
     """Command: delete <name>"""
-    name = args[0]
+    name = " ".join(args)
     record = book.get(name)
     if not record:
         raise excp.ContactNotFound(f"Contact '{name}' not found")
