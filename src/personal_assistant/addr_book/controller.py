@@ -1,8 +1,8 @@
 from colorama import Fore, Back, Style, init
 from typing import cast
-from src.personal_assistant.addr_book.classes import AddressBook
-from src.personal_assistant.addr_book import commands
-from src.personal_assistant.common import get_data_path, read_command, load_data, save_data
+from personal_assistant.addr_book.classes import AddressBook
+from personal_assistant.addr_book import commands
+from personal_assistant.common import get_data_path, read_command, load_data, save_data
 
 
 init(autoreset=True)

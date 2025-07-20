@@ -1,5 +1,5 @@
 import pytest
-from src.personal_assistant.addr_book.classes import EmailFactory, PhoneFactory
+from personal_assistant.addr_book.classes import EmailFactory, PhoneFactory
 
 
 def test_factory_phones():

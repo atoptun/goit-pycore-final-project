@@ -1,5 +1,5 @@
-from src.personal_assistant.notes.classes import NoteRecord
-from src.personal_assistant.common import draw_table
+from personal_assistant.notes.classes import NoteRecord
+from personal_assistant.common import draw_table
 
 
 NOTE_TABLE_CONFIG = [

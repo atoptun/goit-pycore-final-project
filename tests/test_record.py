@@ -1,5 +1,5 @@
 from typing import cast, Any, Generator
-from src.personal_assistant.addr_book.classes import \
+from personal_assistant.addr_book.classes import \
     Record, PhoneFactory, EmailFactory, Birthday, PostAddress
 
 

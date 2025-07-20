@@ -113,7 +113,7 @@ def load_data(path: Path|str = "data.pkl") -> Any:
         return None
 
 
-def draw_table(title: str, columns_config: List[Dict], data: List[Any]):
+def draw_table(title: str, columns_config: List[Dict], data: List[Any], row_sep: str | None = "─"):
     console = Console()
     table = Table(
         title=title, 
@@ -138,8 +138,8 @@ def draw_table(title: str, columns_config: List[Dict], data: List[Any]):
         
         table.add_row(*row_values)
 
-        if i < len(data) - 1:
-            separator_line = Text("─" * 10, style="bright_black")
+        if row_sep and i < len(data) - 1:
+            separator_line = Text(row_sep * 10, style="bright_black")
             separator_row = [separator_line for _ in columns_config]
             table.add_row(*separator_row)            
 

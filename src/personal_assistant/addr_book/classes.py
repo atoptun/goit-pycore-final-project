@@ -1,8 +1,8 @@
 from collections import UserDict, UserList
 from datetime import datetime, timedelta
 import re
-from src.personal_assistant.addr_book import exceptions as excp
-from src.personal_assistant.common import UniqueList
+from personal_assistant.addr_book import exceptions as excp
+from personal_assistant.common import UniqueList
 
 
 class Field:
@@ -21,7 +21,7 @@ class Name(Field):
          super().__init__(str(value).strip().capitalize())
 
     def __eq__(self, value) -> bool:
-         return str(self.value).lower() == str(value).strip().lower()
+         return str(self.value).casefold() == str(value).strip().casefold()
 
 
 class Phone(Field):
@@ -114,7 +114,7 @@ class Email(Field):
     
     @staticmethod
     def _clear_email(value: str) -> str:
-        return str(value).strip().lower()
+        return str(value).strip().casefold()
          
     def __eq__(self, other) -> bool:
         if not isinstance(other, (Email, str)):
@@ -163,12 +163,12 @@ class Birthday(Field):
         self.value = None
         try:
             if value is not None:
-                self.value = datetime.strptime(str(value), "%d.%m.%Y").date()
+                self.value = datetime.strptime(str(value).strip().casefold(), "%d.%m.%Y").date()
         except ValueError:
             raise excp.BirthdayFormatError("Invalid date format. Use DD.MM.YYYY")
 
     def __str__(self) -> str:
-        return self.value.strftime("%d.%m.%Y") if self.value is not None else "Unknown"
+        return self.value.strftime("%d.%m.%Y") if self.value is not None else ""
 
 
 class PostAddress(Field):
@@ -207,7 +207,7 @@ class Record:
         return self.__birthday
 
     @birthday.setter
-    def birthday(self, bd: str):
+    def birthday(self, bd: str | None):
         self.__birthday = Birthday(bd)
 
     @property
@@ -235,12 +235,12 @@ class AddressBook(UserDict[str, Record]):
         The criteria may match the name, phone numbers, emails, or address.
         """
         result = []
-        criteria = criteria.lower()
+        criteria = criteria.casefold()
         for rec in self.values():
-            if str(rec.name).lower().find(criteria) >= 0 \
-                or str(rec.phones).lower().find(criteria) >= 0 \
-                or str(rec.emails).lower().find(criteria) >= 0 \
-                or str(rec.address).lower().find(criteria) >= 0 \
+            if str(rec.name).casefold().find(criteria) >= 0 \
+                or str(rec.phones).casefold().find(criteria) >= 0 \
+                or str(rec.emails).casefold().find(criteria) >= 0 \
+                or str(rec.address).casefold().find(criteria) >= 0 \
             :
                 result.append(rec)
                 continue
@@ -276,7 +276,7 @@ class AddressBook(UserDict[str, Record]):
         return result
 
     def _normalize_name(self, name: str | Name) -> str:
-        return str(name).strip().lower()
+        return str(name).strip().casefold()
 
     def get(self, key, default=None):
         return super().get(self._normalize_name(key), default)

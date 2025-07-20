@@ -1,9 +1,9 @@
 import types
 from colorama import Fore, Back, Style, init
-from src.personal_assistant.common import read_command
-from src.personal_assistant.addr_book.controller import main as book_main
-from src.personal_assistant.notes.controller import main as notes_main
-from src.personal_assistant.views import draw_help
+from personal_assistant.common import read_command
+from personal_assistant.addr_book.controller import main as book_main
+from personal_assistant.notes.controller import main as notes_main
+from personal_assistant.views import draw_help
 
 
 init(autoreset=True)
@@ -16,7 +16,7 @@ MAIN_MENU_COMMANDS_LIST = [
     types.SimpleNamespace(command="close, exit, quit", cmd="close, exit, quit", description="exit")
 ]
 
-COMMAND_LIST = [cmd.strip() for item in MAIN_MENU_COMMANDS_LIST for cmd in item.cmd.split(",")]
+COMMAND_LIST = [cmd.strip().casefold() for item in MAIN_MENU_COMMANDS_LIST for cmd in str(item.cmd).split(",")]
 
 def cmd_show_help():
     draw_help("main commands help", MAIN_MENU_COMMANDS_LIST)
