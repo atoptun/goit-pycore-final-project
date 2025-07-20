@@ -24,7 +24,7 @@ build-backend = "poetry.core.masonry.api"
 packages = [{ include = "personal_assistant", from = "src" }]
 
 [tool.poetry.scripts]
-personal-assistant = "src.personal_assistant.main:main"
+personal-assistant = "personal_assistant.main:main"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"

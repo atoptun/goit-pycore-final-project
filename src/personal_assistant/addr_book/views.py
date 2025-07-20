@@ -14,7 +14,7 @@ def contact_info_format(rec: Record) -> str:
 
 CONTACT_TABLE_CONFIG = [
     {
-        "header": "ID", 
+        "header": "Name", 
         "data_key": "name", 
         "style": "bold yellow", 
         "width": 20, 

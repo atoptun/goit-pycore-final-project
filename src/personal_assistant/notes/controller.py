@@ -10,8 +10,6 @@ init(autoreset=True)
 NOTES_FILE_PATH = get_data_path("notes.pkl")
 
 def main():
-    # print(f"{Fore.CYAN}Welcome to the Notes!")
-
     data = load_data(NOTES_FILE_PATH)
     book = cast(Notes, data) if data else Notes()
     print(f"{Fore.CYAN}Notes contains {len(book.keys())} records")
@@ -29,18 +27,20 @@ def main():
                 print(commands.cmd_add_note(book))
             case "search":
                 print(commands.cmd_search_notes(book, args))
-            case "change":
+            case "edit":
                 print(commands.cmd_change_note(book, args))
             case "delete":
                 print(commands.cmd_delete_note(book, args))
             case "all":
                 print(commands.cmd_show_all(book))
             case "close" | "exit" | "quit" | "back":
-                break
+                break # return exit
             case _:
                 print(f"{Fore.RED}Invalid command.")
 
     save_data(book, NOTES_FILE_PATH)
+
+    return "exit" if command in {"close", "exit", "quit"} else None
 
 
 if __name__ == "__main__":
