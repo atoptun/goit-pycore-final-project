@@ -12,15 +12,18 @@ from src.personal_assistant.views import draw_help
 
 
 HELP_COMMANDS_LIST = [
-    types.SimpleNamespace(command="add", description="add note"),
-    types.SimpleNamespace(command="search [value]", description="search notes by title or content"),
-    types.SimpleNamespace(command="edit [id]", description="edit note"),
-    types.SimpleNamespace(command="delete [id]", description="delete note"),
-    types.SimpleNamespace(command="all", description="show all notes"),
-    types.SimpleNamespace(command="help", description="this help"),
-    types.SimpleNamespace(command="back", description="back to main menu"),
-    types.SimpleNamespace(command="close, exit, quit", description="exit")
+    types.SimpleNamespace(command="add", cmd="add", description="add note"),
+    types.SimpleNamespace(command="search <tags>", cmd="search", description="search notes by title or content"),
+    types.SimpleNamespace(command="edit <id>", cmd="edit", description="edit note"),
+    types.SimpleNamespace(command="delete <id>", cmd="delete", description="delete note"),
+    types.SimpleNamespace(command="all", cmd="all", description="show all notes"),
+    types.SimpleNamespace(command="help, ?", cmd="help", description="this help"),
+    types.SimpleNamespace(command="back", cmd="back", description="back to main menu"),
+    types.SimpleNamespace(command="close, exit, quit", cmd="close, exit, quit", description="exit")
 ]
+
+COMMAND_LIST = [cmd.strip() for item in HELP_COMMANDS_LIST for cmd in item.cmd.split(",")]
+
 
 def input_error(func):
     @wraps(func)
@@ -46,7 +49,7 @@ def parse_input(line: str) -> tuple:
 
 @input_error
 def cmd_show_help():
-    draw_help("notes commands help", HELP_COMMANDS_LIST)
+    draw_help("Notes commands help", HELP_COMMANDS_LIST)
 
 
 @input_error
