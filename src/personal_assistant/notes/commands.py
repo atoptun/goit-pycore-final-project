@@ -30,7 +30,7 @@ def input_error(func):
     def wraper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except excp.NoteBaseError as e:
+        except excp.ApplicationBaseError as e:
             return f"{Fore.RED}{e.strerror}"
         except (ValueError, IndexError) as e:
             if func.__name__ in funcs_local:
