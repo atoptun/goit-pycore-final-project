@@ -8,7 +8,7 @@
             "name": "Run personal_assistant.main",
             "type": "debugpy",
             "request": "launch",
-            "module": "src.personal_assistant.main",
+            "module": "personal_assistant.main",
             "console": "integratedTerminal",
             "justMyCode": true
         },

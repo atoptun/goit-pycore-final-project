@@ -4,11 +4,11 @@ from pathlib import Path
 import types
 from colorama import Fore, Back, Style, init
 from functools import wraps
-from src.personal_assistant.notes import exceptions as excp
-from src.personal_assistant.notes.classes import NoteRecord, Notes
-from src.personal_assistant.common import promt_pretty, read_command
-from src.personal_assistant.notes import views
-from src.personal_assistant.views import draw_help
+from personal_assistant.notes import exceptions as excp
+from personal_assistant.notes.classes import NoteRecord, Notes
+from personal_assistant.common import promt_pretty, read_command
+from personal_assistant.notes import views
+from personal_assistant.views import draw_help
 
 
 HELP_COMMANDS_LIST = [
@@ -22,7 +22,7 @@ HELP_COMMANDS_LIST = [
     types.SimpleNamespace(command="close, exit, quit", cmd="close, exit, quit", description="exit")
 ]
 
-COMMAND_LIST = [cmd.strip() for item in HELP_COMMANDS_LIST for cmd in item.cmd.split(",")]
+COMMAND_LIST = [cmd.strip().casefold() for item in HELP_COMMANDS_LIST for cmd in str(item.cmd).split(",")]
 
 
 def input_error(func):
@@ -41,10 +41,10 @@ def input_error(func):
 
 
 @input_error
-def parse_input(line: str) -> tuple:
+def parse_input(line: str):
     """Returns a command and arguments"""
     cmd, *args = line.strip().split()
-    return (cmd.strip().lower(), *args)
+    return (cmd.strip().casefold(), *args)
 
 
 @input_error
@@ -127,7 +127,7 @@ def cmd_delete_note(notes: Notes, args: list[str]) -> str:
     views.draw_notes(f"{Fore.RED}Note to delete", [record])
 
     answer = read_command(f"Are you sure you want to delete this note? (yes/no): ", color="ansired")
-    if answer.lower() in ("y", "yes"):
+    if answer.casefold() in ("y", "yes"):
         notes.delete(note_id)
         return f"{Fore.GREEN}Note with ID '{note_id}' deleted successfully!"
     

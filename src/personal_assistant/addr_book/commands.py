@@ -5,12 +5,12 @@ import types
 from colorama import Fore, Back, Style, init
 from functools import wraps
 from typing import Callable
-from src.personal_assistant.addr_book import exceptions as excp
-from src.personal_assistant.addr_book.classes import AddressBook, Record, Phone, Email, PhoneFactory, EmailFactory, Birthday
-from src.personal_assistant.common import promt_pretty, read_command
-from src.personal_assistant.addr_book.exceptions import ContactExist, BirthdayFormatError
+from personal_assistant.addr_book import exceptions as excp
+from personal_assistant.addr_book.classes import AddressBook, Record, Phone, Email, PhoneFactory, EmailFactory, Birthday
+from personal_assistant.common import promt_pretty, read_command
+from personal_assistant.addr_book.exceptions import ContactExist, BirthdayFormatError
 from personal_assistant.addr_book import views
-from src.personal_assistant.views import draw_help
+from personal_assistant.views import draw_help
 
 
 init(autoreset=True)
@@ -27,7 +27,7 @@ ADDRESS_BOOK_COMMANDS_LIST = [
     types.SimpleNamespace(command="close, exit, quit", cmd="close, exit, quit", description="exit")
 ]
 
-COMMAND_LIST = [cmd.strip() for item in ADDRESS_BOOK_COMMANDS_LIST for cmd in item.cmd.split(",")]
+COMMAND_LIST = [cmd.strip().casefold() for item in ADDRESS_BOOK_COMMANDS_LIST for cmd in str(item.cmd).split(",")]
 
 
 def input_error(func):
@@ -51,10 +51,10 @@ def cmd_show_help():
 
 
 @input_error
-def parse_input(line: str) -> tuple:
+def parse_input(line: str):
     """Returns a command and arguments"""
     cmd, *args = line.strip().split()
-    return (cmd.strip().lower(), *args)
+    return (cmd.strip().casefold(), *args)
 
 
 @input_error
@@ -75,33 +75,32 @@ def cmd_add_contact(book: AddressBook, args: list[str]) -> str:
     record.phones.extend(phones)
 
     if errors:
-        for error in errors:
-            print(error)
+        print(f"{Fore.RED}{", ".join(errors)}")
 
-    email_str = promt_pretty("Email (Example: test@test.ua, test@test.ua)", multiline=True)
+    email_str = promt_pretty("Emails", multiline=True)
     if email_str is None:
         raise excp.CancelCommand()
     emails, errors = EmailFactory.create(email_str)
     record.emails.extend(emails)
 
     if errors:
-        for error in errors:
-            print(error)
+        print(f"{Fore.RED}{", ".join(errors)}")
 
     address = promt_pretty("Address", multiline=True)
     record.address = address
 
-    birthday = promt_pretty("Birthday(DD.MM.YYYY)")
+    birthday = promt_pretty("Birthday (DD.MM.YYYY)")
     if birthday is None:
         raise excp.CancelCommand()
     try:
-        record.birthday = birthday
+        if birthday:
+            record.birthday = birthday if birthday.casefold().strip() else None
     except BirthdayFormatError as err:
-        print(err.strerror)
+        print(f"{Fore.RED}{err.strerror}")
 
     book.add_record(record)
 
-    return "Contact saved."
+    return f"{Fore.GREEN}Contact saved."
 
 
 @input_error
@@ -131,7 +130,7 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
 
     phones, errors = PhoneFactory.create(new_phones)
     if errors:
-        print(f"{Fore.RED}Errors in phone numbers: {', '.join(errors)}")
+        print(f"{Fore.RED}{', '.join(errors)}")
 
     current_emails = str(record.emails)
     new_emails = promt_pretty("Emails", current_emails, multiline=True)
@@ -140,7 +139,7 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
 
     emails, errors = EmailFactory.create(new_emails)
     if errors:
-        print(f"{Fore.RED}Errors in emails: {', '.join(errors)}")
+        print(f"{Fore.RED}{', '.join(errors)}")
 
     current_address = str(record.address)
     new_address = promt_pretty("Address", current_address, multiline=True)
@@ -154,12 +153,14 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
 
     birthday = str(record.birthday)
     try:
-        birthday = Birthday(new_birthday)
-    except ValueError as e:
-        print(f"{Fore.RED}Invalid birthday format: {e}")
+        new_birthday = new_birthday.casefold().strip()
+        new_birthday = new_birthday if new_birthday else None
+        birthday = str(Birthday(new_birthday)) if new_birthday else None
+    except BirthdayFormatError as e:
+        print(f"{Fore.RED}{e.strerror}")
 
-    y_n = read_command("Save changes (yes\\no): ")
-    if y_n == "no" or y_n == "n":
+    answer = read_command("Save changes (yes/no): ")
+    if answer.casefold() not in ("yes", "no"):
         return ""
 
     record.phones.clear()
@@ -167,7 +168,7 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
     record.emails.clear()
     record.emails.extend(emails)
     record.address = new_address
-    record.birthday = str(birthday)
+    record.birthday = birthday
     
     return f"{Fore.GREEN}Contact updated successfully!"
 
@@ -183,7 +184,7 @@ def cmd_delete_contact(book: AddressBook, args: list[str]) -> str:
     views.draw_contacts(f"{Fore.RED}Contact to delete", [record])
 
     answer = read_command(f"Are you sure you want to delete this contact? (yes/no): ", color="ansired")
-    if answer.lower() in ("y", "yes"):
+    if answer.casefold() in ("y", "yes"):
         book.delete(name)
         return f"{Fore.GREEN}Contact '{name}' deleted successfully!"
     

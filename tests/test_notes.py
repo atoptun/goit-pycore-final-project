@@ -1,5 +1,5 @@
 import pytest
-from src.personal_assistant.notes.classes import NoteRecord, Notes
+from personal_assistant.notes.classes import NoteRecord, Notes
 
 def test_create_note():
     title = "Title"

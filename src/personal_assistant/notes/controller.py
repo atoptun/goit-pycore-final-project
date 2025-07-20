@@ -1,8 +1,8 @@
 from colorama import Fore, Back, Style, init
 from typing import cast
-from src.personal_assistant.notes import commands
-from src.personal_assistant.notes.classes import Notes
-from src.personal_assistant.common import get_data_path, read_command, load_data, save_data
+from personal_assistant.notes import commands
+from personal_assistant.notes.classes import Notes
+from personal_assistant.common import get_data_path, read_command, load_data, save_data
 
 
 init(autoreset=True)

@@ -93,13 +93,13 @@ class Notes(UserDict[str, NoteRecord]):
             title
         """
         result = []
-        search_tags = set(criteria.lower().split())
+        search_tags = set(criteria.casefold().split())
 
         for rec in self.values():
-            rec_tags = set(tag.lower() for tag in rec.tags)
+            rec_tags = set(tag.casefold() for tag in rec.tags)
             matched_tags = rec_tags & search_tags
             if matched_tags:
                 result.append((rec, matched_tags))
 
-        result.sort(key=lambda pair: (-len(pair[1]), sorted(pair[1]), pair[0].title.lower()))
+        result.sort(key=lambda pair: (-len(pair[1]), sorted(pair[1]), pair[0].title.casefold()))
         return [rec for rec, _ in result]

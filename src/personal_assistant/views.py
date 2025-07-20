@@ -1,5 +1,5 @@
 from typing import Any
-from src.personal_assistant.common import draw_table
+from personal_assistant.common import draw_table
 
 
 HELP_TABLE_CONFIG = [
@@ -22,5 +22,6 @@ def draw_help(caption: str, helps_list: list[Any]):
     draw_table(
         title=caption,
         columns_config=HELP_TABLE_CONFIG,
-        data=helps_list 
+        data=helps_list,
+        row_sep=None
     )

@@ -1,8 +1,8 @@
 import pytest
 from typing import cast, Any, Generator
-from src.personal_assistant.addr_book.classes import \
+from personal_assistant.addr_book.classes import \
     AddressBook, Record, PhoneFactory, EmailFactory
-from src.personal_assistant.common import load_data, save_data
+from personal_assistant.common import load_data, save_data
 
 TEST_ADDR_BOO_FILENAME = "./data/test_addr_book.pkl"
 

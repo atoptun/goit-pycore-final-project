@@ -1,7 +1,7 @@
 from colorama import Fore, Back, Style, init
-from src.personal_assistant.addr_book.classes import Record
-from src.personal_assistant.addr_book.classes import Record
-from src.personal_assistant.common import draw_table
+from personal_assistant.addr_book.classes import Record
+from personal_assistant.addr_book.classes import Record
+from personal_assistant.common import draw_table
 
 
 def contact_info_format(rec: Record) -> str:

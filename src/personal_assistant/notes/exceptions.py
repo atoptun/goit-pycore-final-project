@@ -1,4 +1,4 @@
-from src.personal_assistant.exceptions import ApplicationBaseError, CancelCommand
+from personal_assistant.exceptions import ApplicationBaseError, CancelCommand
 
 class NoteBaseError(ApplicationBaseError): ...
 

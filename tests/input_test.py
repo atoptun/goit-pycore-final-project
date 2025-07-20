@@ -2,8 +2,8 @@ from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.history import FileHistory
-from src.personal_assistant.common import get_data_path
-from src.personal_assistant.common import read_command as common_read_command
+from personal_assistant.common import get_data_path
+from personal_assistant.common import read_command as common_read_command
 
 
 
