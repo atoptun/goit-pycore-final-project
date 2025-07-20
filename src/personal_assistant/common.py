@@ -90,7 +90,7 @@ class FirstWordOnlyCompleter(WordCompleter):
 def read_command(message: str = "Command: ", commands: list[str] = [], default: str = "exit") -> str:
     """Read command and handle Ctrl+C (returns default)"""
     try:
-        command_completer = FirstWordOnlyCompleter(commands , ignore_case=True, match_middle=True) # , ignore_case=True, match_middle=True
+        command_completer = FirstWordOnlyCompleter(commands , ignore_case=True, match_middle=True)
         return promt_session.prompt(HTML(f"<ansiyellow>{message}</ansiyellow>"),
                       completer=command_completer)
     except KeyboardInterrupt:

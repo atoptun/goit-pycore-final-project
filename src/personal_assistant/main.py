@@ -32,7 +32,6 @@ def main():
             command = read_command("Command: ", commands=COMMAND_LIST)
             if not command:
                 continue
-        # command, *args = commands.parse_input(cmd_str)
 
         match command:
             case "hello":

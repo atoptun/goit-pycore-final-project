@@ -34,7 +34,7 @@ def main():
             case "all":
                 print(commands.cmd_show_all(book))
             case "close" | "exit" | "quit" | "back":
-                break # return exit
+                break
             case _:
                 print(f"{Fore.RED}Invalid command.")
 

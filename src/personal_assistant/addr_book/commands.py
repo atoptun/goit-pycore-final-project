@@ -124,69 +124,39 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
     if not record:
         raise excp.ContactNotFound(f"Contact '{name}' not found")
 
-    # print()
-    # print(f"{Fore.CYAN}Editing contact: {Fore.YELLOW}{record.name}")
-    # print(f"{Fore.CYAN}Current info:")
-    # print(record)
-    # print()
-
-    # from src.personal_assistant.common import promt_pretty
-
-    current_phones = str(record.phones) # if record.phones else ""
-    # print(f"{Fore.GREEN}Edit phones (current: {current_phones})")
+    current_phones = str(record.phones)
     new_phones = promt_pretty("Phones", current_phones, multiline=True)
     if new_phones is None:
         raise excp.CancelCommand()
 
-    # if new_phones is not None and new_phones.strip() != current_phones:
     phones, errors = PhoneFactory.create(new_phones)
     if errors:
         print(f"{Fore.RED}Errors in phone numbers: {', '.join(errors)}")
-    # record.phones.clear()
-    # record.phones.extend(phones)
-    # print(f"{Fore.GREEN}Phones updated.")
 
-    current_emails = str(record.emails) # if record.emails else ""
-    # print(f"{Fore.GREEN}Edit emails (current: {current_emails})")
+    current_emails = str(record.emails)
     new_emails = promt_pretty("Emails", current_emails, multiline=True)
     if new_emails is None:
         raise excp.CancelCommand()
 
-    # if new_emails is not None and new_emails.strip() != current_emails:
     emails, errors = EmailFactory.create(new_emails)
     if errors:
         print(f"{Fore.RED}Errors in emails: {', '.join(errors)}")
-    # record.emails.clear()
-    # record.emails.extend(emails)
-    # print(f"{Fore.GREEN}Emails updated.")
 
-    current_address = str(record.address) # if record.address.value else ""
-    # print(f"{Fore.GREEN}Edit address (current: {current_address})")
+    current_address = str(record.address)
     new_address = promt_pretty("Address", current_address, multiline=True)
     if new_address is None:
         raise excp.CancelCommand()
 
-    # if new_address is not None and new_address.strip() != current_address:
-    # record.address = new_address.strip()
-    # print(f"{Fore.GREEN}Address updated.")
-
-    current_birthday = str(record.birthday) # if record.birthday.value else ""
-    # print(f"{Fore.GREEN}Edit birthday (current: {current_birthday})")
+    current_birthday = str(record.birthday)
     new_birthday = promt_pretty("Birthday (DD.MM.YYYY)", current_birthday)
     if new_birthday is None:
         raise excp.CancelCommand()
 
-    # if new_birthday is not None and new_birthday.strip() != current_birthday:
     birthday = str(record.birthday)
     try:
-        birthday = Birthday(new_birthday) # new_birthday.strip() if new_birthday.strip() else None
-        # print(f"{Fore.GREEN}Birthday updated.")
+        birthday = Birthday(new_birthday)
     except ValueError as e:
         print(f"{Fore.RED}Invalid birthday format: {e}")
-
-    # print()
-    # print(f"{Fore.CYAN}Updated contact:")
-    # print(record)
 
     y_n = read_command("Save changes (yes\\no): ")
     if y_n == "no" or y_n == "n":
@@ -222,37 +192,6 @@ def cmd_delete_contact(book: AddressBook, args: list[str]) -> str:
     return f"{Fore.GREEN}Contact '{name}' deleted successfully!"
 
 
-# @input_error
-# def cmd_show_phones(book: AddressBook, args: list[str]) -> str:
-#     """Command: phone <name>"""
-#     name, *_ = args
-#     rec = book.find(name)
-#     if rec is None:
-#         raise excp.ContactNotFound("Contact not found.")
-#     return f"{Fore.GREEN}{rec.name}'s phones: {Fore.BLUE}{rec.phones}"
-
-
-# @input_error
-# def cmd_add_birthday(book: AddressBook, args: list[str]) -> str:
-#     """Command: add-birthday <name> <DD.MM.YYYY>"""
-#     name, bd, *_ = args
-#     rec = book.find(name)
-#     if rec is None:
-#         raise excp.ContactNotFound("Contact not found.")
-#     rec.birthday = bd
-#     return f"{Fore.GREEN}Birthday changed."
-
-
-# @input_error
-# def cmd_show_birthday(book: AddressBook, args: list[str]) -> str:
-#     """Command: show-birthday <name>"""
-#     name, *_ = args
-#     rec = book.find(name)
-#     if rec is None:
-#         raise excp.ContactNotFound("Contact not found.")
-#     return f"{Fore.GREEN}{rec.name}'s birthday: {Fore.BLUE}{rec.birthday}"
-
-
 @input_error
 def cmd_birthdays(book: AddressBook, args: list[str]) -> str:
     """Command: birthdays"""
@@ -272,7 +211,6 @@ def cmd_birthdays(book: AddressBook, args: list[str]) -> str:
 
     result = header
     for rec in records:
-        # result += f"{views.contact_info_format(rec)}\n"
         views.draw_contacts("Contact list", records)
 
     return result.strip()
@@ -285,9 +223,6 @@ def cmd_show_all(book: AddressBook, args: list[str]) -> str:
     contacts = list(book.values())
     views.draw_contacts("Contact list", contacts)
     return ""
-    # for rec in book.values():
-    #     result += f"{views.contact_info_format(rec)}\n"
-    # return result
 
 
 def get_function_names():
