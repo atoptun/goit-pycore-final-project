@@ -22,7 +22,7 @@ NOTE_TABLE_CONFIG = [
     {
         "header": "Tags", 
         "data_key": "tags", 
-        "justify": "right", 
+        # "justify": "right", 
         "style": "green"
     }
 ]

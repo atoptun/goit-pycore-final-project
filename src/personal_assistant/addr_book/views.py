@@ -29,7 +29,7 @@ CONTACT_TABLE_CONFIG = [
     {
         "header": "Emails", 
         "data_key": "emails",
-        "width": 20,
+        # "width": 20,
     },
     {
         "header": "Birthday", 
@@ -46,10 +46,10 @@ CONTACT_TABLE_CONFIG = [
 ]
 
 
-def draw_contacts(caption: str, notes_list: list[Record]):
+def draw_contacts(caption: str, contact_list: list[Record]):
     """Print notes list"""
     draw_table(
         title = caption,
         columns_config = CONTACT_TABLE_CONFIG,
-        data = notes_list
+        data = contact_list
     )

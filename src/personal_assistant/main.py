@@ -31,6 +31,7 @@ def main():
         if command is None:
             command = read_command("Command: ", commands=COMMAND_LIST)
             if not command:
+                command = None
                 continue
 
         match command:

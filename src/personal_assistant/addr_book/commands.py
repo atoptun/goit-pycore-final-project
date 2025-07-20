@@ -180,46 +180,35 @@ def cmd_delete_contact(book: AddressBook, args: list[str]) -> str:
     if not record:
         raise excp.ContactNotFound(f"Contact '{name}' not found")
 
-    print(f"{Fore.CYAN}Contact to delete:")
-    print(record)
-    print()
+    views.draw_contacts(f"{Fore.RED}Contact to delete", [record])
 
-    y_n = read_command("Are you sure you want to delete this contact? (yes\\no): ")
-    if y_n == "no" or y_n == "n":
-        return f"{Fore.YELLOW}Contact deletion cancelled."
-
-    book.delete(name)
-    return f"{Fore.GREEN}Contact '{name}' deleted successfully!"
+    answer = read_command(f"Are you sure you want to delete this contact? (yes/no): ", color="ansired")
+    if answer.lower() in ("y", "yes"):
+        book.delete(name)
+        return f"{Fore.GREEN}Contact '{name}' deleted successfully!"
+    
+    return f"{Fore.RED}Contact deletion cancelled."
 
 
 @input_error
 def cmd_birthdays(book: AddressBook, args: list[str]) -> str:
     """Command: birthdays"""
+    days = int(args[0]) if len(args) > 0 else 7
 
-    if args:
-        days = int(args[0])
-        header = f"{Fore.GREEN}There are birthdays in next {days} days:{Fore.RESET}\n"
-        no_birthdays_msg = f"{Fore.GREEN}There are no birthdays in next {days} days."
-        records = book.get_upcoming_birthdays(days)
-    else:
-        header = f"{Fore.GREEN}Birthdays in this week:{Fore.RESET}\n"
-        no_birthdays_msg = f"{Fore.GREEN}There are no birthdays this week."
-        records = book.get_upcoming_birthdays()
+    records = book.get_upcoming_birthdays(days)
 
     if not records:
-        return no_birthdays_msg
+        return f"{Fore.GREEN}There are no birthdays in next {days} days."
 
-    result = header
     for rec in records:
-        views.draw_contacts("Contact list", records)
+        views.draw_contacts(f"There are birthdays in next {days} days:", records)
 
-    return result.strip()
+    return ""
 
 
 @input_error
 def cmd_show_all(book: AddressBook, args: list[str]) -> str:
     """Command: all"""
-    result = ""
     contacts = list(book.values())
     views.draw_contacts("Contact list", contacts)
     return ""
