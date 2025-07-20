@@ -6,7 +6,7 @@ from colorama import Fore, Back, Style, init
 from functools import wraps
 from src.personal_assistant.notes import exceptions as excp
 from src.personal_assistant.notes.classes import NoteRecord, Notes
-from src.personal_assistant.common import promt_pretty
+from src.personal_assistant.common import promt_pretty, read_command
 from src.personal_assistant.notes import views
 from src.personal_assistant.views import draw_help
 
@@ -93,14 +93,6 @@ def cmd_search_notes(note: Notes, args: list[str]):
     return ""
 
 
-def get_function_names():
-    current_module = sys.modules[__name__]
-    return [
-        name for name, obj in inspect.getmembers(current_module, inspect.isfunction)
-        if obj.__module__ == current_module.__name__
-    ]
-
-
 def cmd_change_note(notes: Notes, args: list[str]):
     """Command: change title, message"""
     id = args[0]
@@ -132,17 +124,22 @@ def cmd_delete_note(notes: Notes, args: list[str]) -> str:
     if not record:
         raise excp.NoteNotFound(f"Note with ID '{note_id}' not found")
 
-    print(f"{Fore.CYAN}Note to delete:")
-    print(record)
-    print()
+    views.draw_notes(f"{Fore.RED}Note to delete", [record])
 
-    from src.personal_assistant.common import read_command
-    y_n = read_command("Are you sure you want to delete this note? (yes\\no): ")
-    if y_n == "no" or y_n == "n":
-        return f"{Fore.YELLOW}Note deletion cancelled."
+    answer = read_command(f"Are you sure you want to delete this note? (yes/no): ", color="ansired")
+    if answer.lower() in ("y", "yes"):
+        notes.delete(note_id)
+        return f"{Fore.GREEN}Note with ID '{note_id}' deleted successfully!"
+    
+    return f"{Fore.RED}Note deletion cancelled."
 
-    notes.delete(note_id)
-    return f"{Fore.GREEN}Note with ID '{note_id}' deleted successfully!"
+
+def get_function_names():
+    current_module = sys.modules[__name__]
+    return [
+        name for name, obj in inspect.getmembers(current_module, inspect.isfunction)
+        if obj.__module__ == current_module.__name__
+    ]
 
 
 funcs_local = get_function_names()

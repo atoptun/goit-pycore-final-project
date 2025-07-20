@@ -11,6 +11,7 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.shortcuts import CompleteStyle
 from rich.console import Console
 from rich.table import Table
+from rich.text import Text
 import rich.box as box
 
 
@@ -87,11 +88,11 @@ class FirstWordOnlyCompleter(WordCompleter):
         yield from super().get_completions(document, complete_event)
 
 
-def read_command(message: str = "Command: ", commands: list[str] = [], default: str = "exit") -> str:
+def read_command(message: str = "Command: ", commands: list[str] = [], default: str = "exit", color: str = "ansiyellow") -> str:
     """Read command and handle Ctrl+C (returns default)"""
     try:
         command_completer = FirstWordOnlyCompleter(commands , ignore_case=True, match_middle=True)
-        return promt_session.prompt(HTML(f"<ansiyellow>{message}</ansiyellow>"),
+        return promt_session.prompt(HTML(f"<{color}>{message}</{color}>"),
                       completer=command_completer)
     except KeyboardInterrupt:
         return default
@@ -120,25 +121,26 @@ def draw_table(title: str, columns_config: List[Dict], data: List[Any]):
         header_style="bold cyan",
         box=box.ROUNDED
     )
-
     
     for col_config in columns_config:
         config = col_config.copy()
         config.pop('data_key', None) 
         table.add_column(config.pop('header'), **config)
-
     
-    for item in data:
+    for i, item in enumerate(data):
         row_values = []
         for col_config in columns_config:
             data_key = col_config['data_key']
-            
             value = getattr(item, data_key, "N/A")
-            if data_key == 'tags' and isinstance(value, set):
-                value = ", ".join(value) if value else "N/A"
-            
+            if isinstance(value, (frozenset, set)):
+                value = ", ".join(map(str, value)) if value else ""
             row_values.append(str(value))
         
         table.add_row(*row_values)
-    
+
+        if i < len(data) - 1:
+            separator_line = Text("─" * 10, style="bright_black")
+            separator_row = [separator_line for _ in columns_config]
+            table.add_row(*separator_row)            
+
     console.print(table)

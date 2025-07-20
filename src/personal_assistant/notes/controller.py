@@ -17,6 +17,7 @@ def main():
     while True:
         cmd_str = read_command("Notes command: ", commands=commands.COMMAND_LIST)
         if not cmd_str:
+            command = None
             continue
         command, *args = commands.parse_input(cmd_str)
 
