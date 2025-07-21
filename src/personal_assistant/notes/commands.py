@@ -92,7 +92,7 @@ def cmd_search_notes(note: Notes, args: list[str]):
     views.draw_notes(f"🔍 Search results for: '{search_value}'", found_notes)
     return ""
 
-
+@input_error
 def cmd_change_note(notes: Notes, args: list[str]):
     """Command: change title, message"""
     id = args[0]
