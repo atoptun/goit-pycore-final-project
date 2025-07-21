@@ -272,7 +272,9 @@ class AddressBook(UserDict[str, Record]):
                 if bd_this_year.weekday() > 4: 
                     days_until_monday = (7 - bd_this_year.weekday())
                     bd_this_year += timedelta(days=days_until_monday)
-                result.append(user)
+                result.append((user, (bd_this_year - today).days))
+        result = sorted(result, key = lambda pair: pair[1])
+        result = [pair[0] for pair in result]
         return result
 
     def _normalize_name(self, name: str | Name) -> str:

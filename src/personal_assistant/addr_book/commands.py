@@ -160,7 +160,7 @@ def cmd_edit_contact(book: AddressBook, args: list[str]) -> str:
         print(f"{Fore.RED}{e.strerror}")
 
     answer = read_command("Save changes (yes/no): ")
-    if answer.casefold() not in ("yes", "no"):
+    if answer.casefold() not in ("yes", "y"):
         return ""
 
     record.phones.clear()
@@ -201,7 +201,6 @@ def cmd_birthdays(book: AddressBook, args: list[str]) -> str:
     if not records:
         return f"{Fore.GREEN}There are no birthdays in next {days} days."
 
-    # for rec in records:
     views.draw_contacts(f"There are birthdays in next {days} days:", records)
 
     return ""
