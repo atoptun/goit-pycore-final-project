@@ -273,7 +273,7 @@ class AddressBook(UserDict[str, Record]):
                     days_until_monday = (7 - bd_this_year.weekday())
                     bd_this_year += timedelta(days=days_until_monday)
                 result.append((user, (bd_this_year - today).days))
-        result = sorted(result, key = lambda pair: pair[1])
+        result = sorted(result, key = lambda pair: (pair[1], str(pair[0].name)))
         result = [pair[0] for pair in result]
         return result
 
