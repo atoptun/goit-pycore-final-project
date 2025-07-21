@@ -201,8 +201,8 @@ def cmd_birthdays(book: AddressBook, args: list[str]) -> str:
     if not records:
         return f"{Fore.GREEN}There are no birthdays in next {days} days."
 
-    for rec in records:
-        views.draw_contacts(f"There are birthdays in next {days} days:", records)
+    # for rec in records:
+    views.draw_contacts(f"There are birthdays in next {days} days:", records)
 
     return ""
 

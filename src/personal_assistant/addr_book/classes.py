@@ -250,7 +250,7 @@ class AddressBook(UserDict[str, Record]):
     def delete(self, name: str):
         self.data.pop(self._normalize_name(name), None)
 
-    def get_upcoming_birthdays(self, days: int=7):
+    def get_upcoming_birthdays(self, days: int=7) -> list[Record]:
         """
         Returns a list of users whose birthdays are within the next 'days' from today.
         If 'days' is not provided, it defaults to 7 days.
