@@ -41,10 +41,7 @@ This is a console-based personal assistant application designed to help users ma
 
 ## Installation
 
-1.  **Ensure no virtual environment is active.**
-    If you are in a virtual environment (e.g., indicated by `(venv)` in your prompt), deactivate it before proceeding. For example, run `deactivate`.
-
-2.  **Install pipx (if you don't have it):**
+1.  **Install pipx (if you don't have it):**
 
     - **Linux (Debian/Ubuntu-based):**
       ```bash
@@ -63,21 +60,19 @@ This is a console-based personal assistant application designed to help users ma
       python3 -m pipx ensurepath
       ```
 
-3.  **Install Poetry (using pipx):**
-    Poetry is a dependency management and packaging tool for Python. It helps you manage your project's dependencies and build your project.
-
+2.  **Build and Install the application:**
     ```bash
-    pipx install poetry
+    pipx install git+https://github.com/atoptun/goit-pycore-final-project
     ```
 
-4.  **Build and Install the application:**
+3.  **Run the application:**
     ```bash
-    poetry build
-    pipx install --force ./dist/personal_assistant-0.1.0-py3-none-any.whl
+    personal-assistant
     ```
+
 
 # Uninstallation
 
 ```bash
-pipx uninstall personal_assistant
+pipx uninstall personal-assistant
 ```
