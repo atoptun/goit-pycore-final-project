@@ -76,3 +76,5 @@ This is a console-based personal assistant application designed to help users ma
 ```bash
 pipx uninstall personal-assistant
 ```
+
+some changes
